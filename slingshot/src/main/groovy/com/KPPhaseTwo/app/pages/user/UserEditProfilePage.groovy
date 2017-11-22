@@ -55,10 +55,6 @@ final class UserEditProfilePage extends WebPage {
 		new BasicInformationForm().uploadProfilepic(browser,formData)
 	}
 
-	def static educationDetails = { browser,formData ->
-		new EductionQualificationForm().educationDetails(browser,formData)
-	}
-
 	def static skillsDisplayed = { browser,formData ->
 		new SkillsForm().skillsDisplayed(browser,formData)
 	}
@@ -123,7 +119,7 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def UPDATE_BUTTON      = ".//*[@id='edit_profile_container']//form//div[@class='col-md-3']//button[@class='ptb_6 btn button-primary']"
 
-		private static final def UPLOAD_PROFILE_IMAGE_LINK  = ".//*[@id='edit_profile']/div[2]/label/span[2]"
+		private static final def UPLOAD_PROFILE_IMAGE_LINK  = ".//*[@id='edit_profile']/div[2]/label/span[1]"
 
 		private static final def CHANGE_PROFILE_IMAGE_LINK = ".//span[contains(text(), 'Change Image')]"
 
@@ -254,7 +250,8 @@ final class UserEditProfilePage extends WebPage {
 
 		def static uploadProfilepic = { browser,formData ->
 			def dataToEnter=""
-			browser.click(UPLOAD_PROFILE_IMAGE_LINK)
+			//def splittedimageSource
+			browser.click(CHANGE_PROFILE_IMAGE_LINK)
 			browser.delay(1500)
 			browser.click(UPLOAD_PROFILE_IMAGE_BUTTON)
 			browser.delay(1000)
@@ -266,8 +263,13 @@ final class UserEditProfilePage extends WebPage {
 			browser.delay(3000)
 			def userUploadText = browser.gettext(SUCCESS_MESSAGE)
 			def actualUploadMsg = BasicInformationErrorMessageMap.get('profileUploadSuccess')
-			KPCommonPage.srcUserProfilePic = browser.gettext(KPCommonPage.USER_PROFILE_PIC, "src")
+			def imageSource = browser.gettext(KPCommonPage.USER_PROFILE_PIC, "src")
+			println "Image Source ::::::::::::: "+imageSource
+			def splittedimageSource = imageSource.split("\\?")
+			println "imageSource----------> "+splittedimageSource
+			KPCommonPage.srcUserProfilePic = splittedimageSource[0]
 			println "KPCommonPage.srcUserProfilePic  --------------------------> "+KPCommonPage.srcUserProfilePic
+
 			if(userUploadText.equals(actualUploadMsg)){
 				return new SuccessOutcome()
 			}else {
@@ -321,8 +323,6 @@ final class UserEditProfilePage extends WebPage {
 		private static final def PG_START           = ".//div[@class='edu-qual-container ']//select[@name='postgraduateStartYear']	"
 
 		private static final def PG_END             = ".//div[@class='edu-qual-container ']//select[@name='postgraduateEndYear']"
-
-		private static final def EDU_DETAILS        = ".//div[@aria-hidden='false']//p"
 
 		private static final def SCROLL                 = ".//*[@id='main_page']/div[2]/div/div[2]/div[3]/div/h4"
 
@@ -433,61 +433,15 @@ final class UserEditProfilePage extends WebPage {
 
 		//override submitForm
 		def static submitForm = { browser, formFields, submitButton, data, errFields ->
-			println "2"
 			browser.scrollToElement(browser.getElement(Browser.XPATH, submitButton))
-			println "3"
 			browser.delay(1000)
 			//browser.scrollToElement(browser.getElement(Browser.XPATH, X_PERCENTAGE))
 			if(browser.checkEnabled(submitButton)){
-				println "44"
 				browser.click submitButton // submit the form.
-				println "5"
 				browser.delay(1000)
 			}
 			println "Going to get validation messages and error fields are " +  errFields
 			browser.getValidationMessages errFields // get the validation messages from the current page.
-		}
-
-		def static educationDetails = { browser, formData ->
-			def result = false
-			def eduDetailList = []
-			def newFormData = []
-			def neweduDetailList = []
-			browser.scrollToElement(browser.getElement(Browser.XPATH, ".//a[@href='#/dashboard']"))
-			browser.delay(1500)
-			def userEduDetails= browser.getLists(EDU_DETAILS)
-			println "userEduDetails::::::::::::::: "+userEduDetails
-			browser.delay(2000)
-			for(int i=0;i<userEduDetails.size();i++){
-				if(userEduDetails[i] != null && userEduDetails[i].size() > 0 && userEduDetails[i].charAt(userEduDetails[i].size()-1)=='.') {
-					userEduDetails[i] = userEduDetails[i].substring(0, userEduDetails[i].size()-1)
-					userEduDetails[i] = userEduDetails[i].trim()
-				}
-				userEduDetails[i] = userEduDetails[i].trim();
-				if((userEduDetails[i]).contains("-")){
-					def splittedValue = userEduDetails[i].split("-")
-					eduDetailList.add(splittedValue[0].trim())
-					eduDetailList.add(splittedValue[1].trim())
-				}else{
-					eduDetailList.add(userEduDetails[i].trim())
-				}
-			}
-			if(formData.size()==(eduDetailList.size())){
-				newFormData = formData.sort()
-				neweduDetailList = eduDetailList.sort()
-				for(int k=0;k<neweduDetailList.size();k++){
-					if(newFormData[k].equalsIgnoreCase(neweduDetailList[k])){
-						result = true
-					}
-				}
-				if(result){
-					return new SuccessOutcome()
-				}else{
-					return KPCommonPage.returnFailureOutcome(browser, "EducationDetailsMismatchIssue", "Education details on View profile page do not matchwith the data provided")
-				}
-			}else{
-				return KPCommonPage.returnFailureOutcome(browser, "EducationDetailsSizeMismatchIssue", "Education details count on View profile page do not matchwith the data provided")
-			}
 		}
 	}
 
@@ -504,9 +458,9 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def INDUSTRY_AUTOCOMPLETE           = ".//md-autocomplete-parent-scope[@class='ng-scope']"
 
-		private static final def JOB_ROLE     				     = ".//div[@class='work-exp-container']//input[@class='capitalize form-control ng-pristine ng-untouched ng-valid-maxlength ng-invalid ng-invalid-required'][@ng-model='userProfiles.jobRole']"
+		private static final def JOB_ROLE     				     = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.jobRole'][@aria-invalid='true']"
 
-		private static final def COMPANY_NAME  					 = ".//div[@class='work-exp-container']//input[@class='capitalize form-control ng-pristine ng-untouched ng-valid-maxlength ng-invalid ng-invalid-required'][@ng-model='userProfiles.companyName']"
+		private static final def COMPANY_NAME  					 = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.companyName'][@aria-invalid='true']"
 
 		private static final def TIMEPERIOD_STARTMONTH 		     = ".//div[@class='work-exp-container']//select[@class='form-control margin-month ng-pristine ng-untouched ng-invalid ng-invalid-required'][@id='category']"
 
@@ -530,6 +484,7 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def FIELDS 						 = [INDUSTRY, JOB_ROLE, COMPANY_NAME, TIMEPERIOD_STARTMONTH, TIMEPERIOD_STARTYEAR, TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR, CURRENTLY_WORKING_HERE]
 
+		private static final def FIELDSAFTERUNCHECK              = [TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR]
 		// the error fields.
 		private static final def FORM_ERROR                      = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
@@ -563,7 +518,6 @@ final class UserEditProfilePage extends WebPage {
 						browser.scrollToElement(browser.getElement(Browser.XPATH, FIELDS[j]))
 						browser.delay(500)
 						if(formData[j] != ""){
-							//WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
 							browser.populateField(FIELDS[j], formData[j])
 							browser.delay(1000)
 							if(browser.isDisplayed(CREATENEW_INDUSTRY_LINK)){
@@ -576,14 +530,49 @@ final class UserEditProfilePage extends WebPage {
 						} else{
 							browser.populateField(FIELDS[j], formData[j])
 						}
-					}else {
-						WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
-						if(FIELDS[j].equals(TIMEPERIOD_ENDYEAR)){
-							browser.pressTab(TIMEPERIOD_ENDYEAR)
+					}else if(FIELDS[j].equals(CURRENTLY_WORKING_HERE)){
+
+						if(formData[j].equals("1")){
+							println "1"
+							WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
+							println "2"
+							println "CHECKED"
+							KPCommonPage.WorkExperienceDetails.add("Till Date .")
+							println "3"
+						}else if(formData[j].equals("0")){
+							for(int k=FIELDSAFTERUNCHECK.size();k<=FIELDSAFTERUNCHECK.size();k--){
+								WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
+								println "4"
+								WebForm.inputData(browser,FIELDS[j-k],tagName,formData[j-k])
+								println "5"
+								KPCommonPage.WorkExperienceDetails.add(formData[j-k].trim())
+								println"6"
+							}
 						}
+					}else if(FIELDS[j].equals(TIMEPERIOD_ENDYEAR) || FIELDS[j].equals(TIMEPERIOD_ENDMONTH)){
+					println "7"
+					println  "formData[j]::::::::::::::::::::::::: "+formData[j]
+						if(formData[j]!=""){
+							println "8"
+							WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
+							println "9"
+							KPCommonPage.WorkExperienceDetails.add(formData[j].trim())
+							println "10"
+						}
+					}else{
+						WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
+						println "Adding------------>"
+						KPCommonPage.WorkExperienceDetails.add(formData[j].trim())
+						println "Added------------>"
+						/*if(FIELDS[j].equals(TIMEPERIOD_ENDYEAR)){
+						 browser.pressTab(TIMEPERIOD_ENDYEAR)
+						 }*/
 					}
 				}
 			}
+			println "121212121"
+			println "KPCommonPage.WorkExperienceDetails----------> "+KPCommonPage.WorkExperienceDetails
+			println "767676767676"
 			return outcome
 		}
 

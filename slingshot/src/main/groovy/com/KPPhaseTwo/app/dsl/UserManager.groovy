@@ -30,10 +30,14 @@ class UserManager {
 	}
 	
 //EDIT PROFILE
-	def educationDetails = { browser, formData ->
-		UserEditProfilePage.educationDetails browser, formData
+	def educationDetailsMatch = { browser, formData ->
+		ViewUserPublicProfilePage.educationDetailsMatch browser, formData
 	}
 	
+	def workExperienceDetailsMatch = { browser, formData ->
+		println "-------------------------------------------------------------------------...-----------------------"
+		ViewUserPublicProfilePage.workExperienceDetailsMatch browser, formData
+	}
 	def skillsDisplayed = { browser, formData ->
 		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.skillsDisplayed browser, formData
@@ -65,7 +69,6 @@ class UserManager {
 	}
 	
 	def uploadUserImgDisplay = { browser, formData ->
-		println "------------------------------------------------------------>>>>>"
 		ViewUserPublicProfilePage.uploadUserImgDisplay browser,  formData
 	}
 

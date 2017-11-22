@@ -108,7 +108,7 @@ class KPCommonPage {
 	//Edit User Profile
 	private static def skills = []
 	private static def allEducationDetails = []
-
+	private static def WorkExperienceDetails = []
 
 	//To return Failure outcome
 	static def returnFailureOutcome(def browser, def fileName, def message){

@@ -47,6 +47,17 @@ Scenario: To Verify the navigation from View Public Profile page to Dashboard pa
 	Then I am ON userViewProfile page
 	Then I CLICK dashBoardLink breadcrumb
 	Then I am ON dashboard page
+	
+@Group(UploadProfilePic)
+Scenario: To verify profile pic upload success scenario with DATA UserProfilePicUpload_Success 
+	Given I am ON dashboard page
+	When I CLICK userEditProfile link
+	Then I am ON editProfile page
+	And I PERFORM uploadProfilepic to upload user profile picture with DATA UserProfilePicUpload_Success
+	And I CLICK viewPublicProfile link
+	Then I am ON userViewProfile page
+	And I VERIFY uploadUserImgDisplay 
+	Then I am ON userViewProfile page
 
 @Group(UserBaisicInfoDetails)
 Scenario: To verify all the failure scenario for 'User Edit Profile Basic Information' page with DATA UserBaisicInfo_Failure 
@@ -86,7 +97,7 @@ Scenario: To verify the entered Education details in View Public Profile page wi
 	And  I ENTER eductionQualification valid details UserEduQualification_Success
 	When I SUBMIT eductionQualification form 
 	Then I am ON userViewProfile page
-	And I VERIFY educationDetails on View Profile page
+	And I VERIFY educationDetailsMatch on View Profile page
 	Then I am ON userViewProfile page 
 	
 @Group(WorkExperienceFailure)
@@ -106,10 +117,21 @@ Scenario: To verify success scenario for 'User Edit Profile Work Experience' pag
 	When I CLICK userEditProfile link
 	Then I am ON editProfile page
 	And I CLICK workExperienceArrowDown
+	Then I ENTER workExperience valid details with DATA WorkExperience_Success
+	And I SUBMIT workExperience form
+	And I VERIFY workExperienceDetailsMatch
+	Then I am ON userViewProfile page
+
+@Group(WorkExperienceAddMoreSuccess)	
+Scenario: Scenario: To verify success scenario for adding multiple work experience in 'User Edit Profile Work Experience' page with DATA WorkExperienceAddMore_Success
+	Given I am ON dashboard page
+	When I CLICK userEditProfile link
+	Then I am ON editProfile page
+	And I CLICK workExperienceArrowDown
 	Then I CLICK workExperienceAddMoreButton
 	And  I ENTER workExperience valid details with DATA WorkExperience_Success
 	When I SUBMIT workExperience form 
-	Then I am ON userViewProfile page 
+	Then I am ON userViewProfile page  
 	
 @Group(SkillsSuccess)
 Scenario: To verify success scenario for 'User Edit Profile Skills' page with DATA Skills_Success
@@ -137,27 +159,6 @@ Scenario: To verify success scenario for 'User Edit Profile Skills' page with DA
 	And I CLICK skillsArrowDown
 	Then I VERIFY skillsRetained on edit profile pages
 	And I am ON editProfile page
-
-@Group(CertificateSuccess)	
-Scenario: To verify success scenario for 'User Edit Profile Certificate' page with DATA Certificate_Success
-  Given I am ON dashboard page
-	When I CLICK userEditProfile link
-	Then I am ON editProfile page
-	And I CLICK certificateArrowDown
-	And  I ENTER certificate valid details with DATA Certificate_Success
-	And I SUBMIT certificate form 
-	Then I am ON userViewProfile page
-	
-@Group(UploadProfilePic)
-Scenario: To verify profile pic upload success scenario with DATA UserProfilePicUpload_Success 
-	Given I am ON dashboard page
-	When I CLICK userEditProfile link
-	Then I am ON editProfile page
-	And I PERFORM uploadProfilepic to upload user profile picture with DATA UserProfilePicUpload_Success
-	And I CLICK viewPublicProfile link
-	Then I am ON userViewProfile page
-	And I VERIFY uploadUserImgDisplay 
-	Then I am ON userViewProfile page
 	
 @Group(removePecificSkill)
 Scenario: To remove a user skill and verify if skill is removed with DATA RemoveSkill_Success
@@ -169,5 +170,15 @@ Scenario: To remove a user skill and verify if skill is removed with DATA Remove
 	And I SUBMIT skills form 
 	Then I am ON userViewProfile page
 	Then I VERIFY skillsRemoved after update on 'View Public Profile' page	
+	Then I am ON userViewProfile page
+	
+@Group(CertificateSuccess)	
+Scenario: To verify success scenario for 'User Edit Profile Certificate' page with DATA Certificate_Success
+  Given I am ON dashboard page
+	When I CLICK userEditProfile link
+	Then I am ON editProfile page
+	And I CLICK certificateArrowDown
+	And  I ENTER certificate valid details with DATA Certificate_Success
+	And I SUBMIT certificate form 
 	Then I am ON userViewProfile page
 	

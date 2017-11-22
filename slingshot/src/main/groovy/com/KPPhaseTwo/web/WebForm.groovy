@@ -138,9 +138,10 @@ abstract class WebForm {
 				break
 
 			case "md-checkbox" :
-				if(data.trim().equals("1")){
+				/*if(data.trim().equals("1")){
 					browser.click(field)
-				}
+				}*/
+			browser.clickMdCheckBox(field,data)
 				break
 
 			case "label"	:
