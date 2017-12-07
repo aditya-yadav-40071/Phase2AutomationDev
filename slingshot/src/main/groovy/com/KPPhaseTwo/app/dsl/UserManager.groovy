@@ -35,43 +35,64 @@ class UserManager {
 	}
 	
 	def workExperienceDetailsMatch = { browser, formData ->
-		println "-------------------------------------------------------------------------...-----------------------"
 		ViewUserPublicProfilePage.workExperienceDetailsMatch browser, formData
 	}
 	def skillsDisplayed = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.skillsDisplayed browser, formData
 	}
 	
 	def deleteExistingSkills = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.deleteExistingSkills browser, formData
 	}
 	
 	def skillsRetained = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.skillsRetained browser, formData
 	}
 	
 	def removeASkill = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.removeASkill browser, formData
 	}
 	
 	def skillsRemoved = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.skillsRemoved browser, formData
 	}
 	
 	def uploadProfilepic = { browser, formData ->
-		println "Inside User Manager::::::::::::::"
 		UserEditProfilePage.uploadProfilepic browser, formData
 	}
 	
 	def uploadUserImgDisplay = { browser, formData ->
 		ViewUserPublicProfilePage.uploadUserImgDisplay browser,  formData
 	}
+	
+	def deleteWorkExperience = { browser, formData ->
+		UserEditProfilePage.deleteWorkExperience browser,  formData
+	}
 
+	def workExperienceDeleted = { browser, formData ->
+		ViewUserPublicProfilePage.workExperienceDeleted browser,  formData
+	}
+	
+	def ifWorkExperienceDisplayed = { browser, formData ->
+		ViewUserPublicProfilePage.ifWorkExperienceDisplayed browser,  formData
+	}
+
+	def editWorkExperienceDetails = { browser, formData ->
+		UserEditProfilePage.editWorkExperienceDetails browser,  formData
+	}
+	
+	def certificateMatch = { browser, formData ->
+		ViewUserPublicProfilePage.certificateMatch browser,  formData
+	}
+	
+	def editDocumentsDetails = { browser,formData ->
+		UserEditProfilePage.editDocumentsDetails browser, formData
+	}
+	
+	def deleteCertificate = { browser, formData ->
+		println "Inside User ManagerOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+		UserEditProfilePage.deleteCertificate browser,  formData
+	}
 //DASHBOARD PAGE
 	
 	//To logout from the application

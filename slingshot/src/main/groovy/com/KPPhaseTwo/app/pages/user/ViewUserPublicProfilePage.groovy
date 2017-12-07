@@ -26,14 +26,30 @@ final class ViewUserPublicProfilePage extends WebPage {
 		new ViewUserPublicProfilePageForm().workExperienceDetailsMatch(browser,formData)
 	}
 
+	def static ifWorkExperienceDisplayed = { browser, formData ->
+		println "Inside User Manager::::::::::::::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		new ViewUserPublicProfilePageForm().ifWorkExperienceDisplayed browser,  formData
+	}
+	
+	
+	def static certificateMatch = { browser,formData ->
+		new ViewUserPublicProfilePageForm().certificateMatch(browser,formData)
+	}
+
+
 	static final class ViewUserPublicProfilePageForm extends WebForm {
 
-		private static final def IMAGE_SOURCE   = ".//img[@class='profile-pic']"
+		private static final def IMAGE_SOURCE            = ".//img[@class='profile-pic']"
 
-		private static final def EDU_DETAILS    = ".//div[@aria-hidden='false']//p"
+		private static final def EDU_DETAILS             = ".//div[@aria-hidden='false']//p"
 
-		private static final def WORKEXPERIENCE_DETAILS = ".//div[@ng-repeat='userProfiles in userProfile.kpUserExperienceJSON ']//p"
+		private static final def WORKEXPERIENCE_DETAILS  = ".//div[@ng-repeat='userProfiles in userProfile.kpUserExperienceJSON ']//p"
 
+		private static final def DOCNAME_VIEWPROFILE     = ".//label[@name='docName']"
+		
+		private static final def SCROLL_TO_VIEW_DOC      = ".//ul[@class='footer-secondary-list']/li/h4[@class='heading']"
+		
+		
 		//Verify image displayed in View Organization Profile page
 		def static final uploadUserImgDisplay = { browser, formData ->
 			def srcImagePath = []
@@ -103,10 +119,10 @@ final class ViewUserPublicProfilePage extends WebPage {
 				for(int i=0;i<workExperienceOnViewProfile.size();i++){
 					println "1"
 					if(workExperienceOnViewProfile[i] != null && workExperienceOnViewProfile[i].size() > 0 && workExperienceOnViewProfile[i].charAt(workExperienceOnViewProfile[i].size()-1)=='.'){
-					 println "2"
-					 workExperienceOnViewProfile[i] = workExperienceOnViewProfile[i].substring(0, workExperienceOnViewProfile[i].size()-1).trim()
-					 println "3"
-					 }
+						println "2"
+						workExperienceOnViewProfile[i] = workExperienceOnViewProfile[i].substring(0, workExperienceOnViewProfile[i].size()-1).trim()
+						println "3"
+					}
 					println "4"
 					workExperienceOnViewProfile[i] = workExperienceOnViewProfile[i].trim();
 					println "5"
@@ -126,7 +142,7 @@ final class ViewUserPublicProfilePage extends WebPage {
 								for(int k=0;k<value.size();k++){
 									println "VALUE OF K is "+k+" and"+" value[k] is "+value[k]
 									if(value[k]!=""){
-									workExperienceOnViewProfileList.add(value[k].trim())
+										workExperienceOnViewProfileList.add(value[k].trim())
 									}
 								}
 							}else {
@@ -141,6 +157,9 @@ final class ViewUserPublicProfilePage extends WebPage {
 					}
 				}
 				println "workExperienceOnViewProfileList :::::------> "+workExperienceOnViewProfileList
+				println "KPCommonPage.WorkExperienceDetails.size() :: "+KPCommonPage.WorkExperienceDetails
+				println "KPCommonPage.WorkExperienceDetails.size() :: "+KPCommonPage.WorkExperienceDetails.size()
+				println "workExperienceOnViewProfileList.size()    :: "+workExperienceOnViewProfileList.size()
 				if(KPCommonPage.WorkExperienceDetails.size()== workExperienceOnViewProfileList.size()){
 					println "12"
 					expectedWorkExprience = KPCommonPage.WorkExperienceDetails.sort()
@@ -159,6 +178,31 @@ final class ViewUserPublicProfilePage extends WebPage {
 				println "The Work Experience details were not added"
 			}
 		}
+
+		def static final ifWorkExperienceDisplayed = { browser, formData ->
+			println "HELLLLLLLLLOOOOOOOOOOOOOOOOO"
+			println "browser.isDisplayed(WORKEXPERIENCE_DETAILS):::::::: "+browser.isDisplayed(WORKEXPERIENCE_DETAILS)
+			if(browser.isDisplayed(WORKEXPERIENCE_DETAILS) == null){
+				println"UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+				return new SuccessOutcome()
+			}else{
+
+			}
+		}
+
+		def static certificateMatch = { browser,formData ->
+			browser.scrollToElement2(SCROLL_TO_VIEW_DOC)
+			browser.delay(200)
+			def docName = browser.getLists(DOCNAME_VIEWPROFILE)
+			for(int i=0;i<docName.size();i++){
+				if(docName[i].equalsIgnoreCase(KPCommonPage.docName[i])){
+					return new SuccessOutcome()
+				}else{
+					return KPCommonPage.returnFailureOutcome(browser, "DocumentNameMismatchIssue", "The document name does not match on View Public profile page")
+				}
+			}
+		}
+
 	}
 }
 

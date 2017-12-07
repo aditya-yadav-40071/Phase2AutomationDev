@@ -109,6 +109,8 @@ class KPCommonPage {
 	private static def skills = []
 	private static def allEducationDetails = []
 	private static def WorkExperienceDetails = []
+	private static def WorkExperienceJobRole = []
+	private static def docName = []
 
 	//To return Failure outcome
 	static def returnFailureOutcome(def browser, def fileName, def message){
@@ -351,19 +353,12 @@ class KPCommonPage {
 
 	//To Pick the date
 	public static def datePicker(def browser, def formDate){
-		println "Inside KPCommon Page date picker"
-		println "formDate : : : : : : "+formDate
 		def dateValue= formDate.split ("-")
-		println "dateValue : : : : : : "+dateValue
 		def dayValue = Integer.parseInt(dateValue.last()).toString()
-		println "dayValue : : : : : : "+dayValue
 		def monthValue = Integer.parseInt(dateValue[1])-1
-		println "monthValue : : : : : : "+monthValue
 		def yearValue = dateValue.first()
-		println "yearValue : : : : : : "+yearValue
 		browser.selectDropdownValue(SELECT_YEAR,yearValue)
 		def monthInString=  browser.getMonthForInt(monthValue)
-		println "monthInString : : : : : : "+monthInString
 		browser.selectDropdownValue(SELECT_MONTH,monthInString)
 		browser.selectDate(DAY,dayValue)
 	}

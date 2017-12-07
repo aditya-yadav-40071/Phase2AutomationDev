@@ -17,7 +17,7 @@ class Common {
 	 */
 	public getCurrentPage (def browser) {
 		def pageKey = PageDefs.getCurrentPageKey(browser);
-		println ("Current Page Key: " + pageKey)
+		println ("Current Page Key : " + pageKey)
 		return WebPageFactory.createWebPage(pageKey);
 	}
 	

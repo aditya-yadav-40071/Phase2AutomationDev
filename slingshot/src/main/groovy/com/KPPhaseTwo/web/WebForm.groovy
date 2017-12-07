@@ -151,6 +151,7 @@ abstract class WebForm {
 				break
 
 			case "search" :
+			println ""
 				browser.scrollToElement2(field)
 				browser.populateField(field, data)
 				break

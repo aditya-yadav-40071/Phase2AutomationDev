@@ -98,7 +98,7 @@ class ClickAction {
 		xPathMapping.put("skillsArrowDown",".//button[@class='skills accordion']");
 		xPathMapping.put("editProfilelink",".//*[@id='breadcrumbox']/ol/li[2]/a");
 		xPathMapping.put("certificateArrowDown",".//div[@class='certificates-container']/button[@class='accordion']");
-		
+		xPathMapping.put("certificateAddMore",".//div[@class='certificates-container']//button[@ng-click='addDocument()']");
 		
 		//Pod details Page
 		xPathMapping.put("buyThePod", "//div[@ng-if='buyCourse']/button");

@@ -293,11 +293,11 @@ public final class Browser {
 			}
 		}
 	}
-	
+
 	//To check weather element is selected
 	public boolean isSelected(WebElement element){
-			println "   hello  "+element
-			return element.isSelected()	}
+		return element.isSelected()
+	}
 
 	public void clickMdCheckBox(String element, String data){
 		String value
@@ -448,7 +448,7 @@ public final class Browser {
 				}
 			}
 		}
-		println "validationMessages"+validationMessages
+		println "validationMessages:::: "+validationMessages
 		return validationMessages
 	}
 

@@ -25,7 +25,7 @@ class Result {
 		if(status.equals(FAIL)) {	
 			if(message!=null) errMsg += message + "<br/>";		
 			if(expectedResult!=null) errMsg += "Expected: " + expectedResult + "<br/>";
-			if(actualResult!=null) errMsg += "Actual: " + actualResult;
+			if(actualResult!=null) errMsg +=   "Actual  : " + actualResult;
 			if(dataUsed!=null) errMsg += "<br/>Data Used: " + dataUsed;
 		}
         resultJson

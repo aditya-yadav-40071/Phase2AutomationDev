@@ -18,20 +18,15 @@ final class UserEditProfilePage extends WebPage {
 
 	//To populate the datas
 	def populateData = { browser, formKey, formData ->
-		println "===========Inside Populate Data==========="
 		if(formKey.equalsIgnoreCase("basicInformation")) {
 			new BasicInformationForm().populateFields(browser, formData)
 		} else if(formKey.equalsIgnoreCase("eductionQualification")) {
-			println ":::::::::::::Inside form key populate fields::::::>>>>>>>>>>>>>>>"
 			new EductionQualificationForm().populateFields(browser, formData)
 		}else if(formKey.equalsIgnoreCase("workExperience")){
-			println "***********Entered in Work Experience***************"
 			new WorkExperienceForm().populateFields(browser, formData)
 		}else if(formKey.equalsIgnoreCase("skills")){
-			println "***********Entered in SKILLS***************"
 			new SkillsForm().populateFields(browser, formData)
 		}else if(formKey.equalsIgnoreCase("certificate")){
-			println "***********Entered in CERTIFICATES***************"
 			new CertificateForm().populateFields(browser, formData)
 		}
 	}
@@ -75,68 +70,83 @@ final class UserEditProfilePage extends WebPage {
 		new SkillsForm().skillsRemoved(browser,formData)
 	}
 
+	def static deleteWorkExperience = { browser,formData ->
+		new WorkExperienceForm().deleteWorkExperience(browser,formData)
+	}
+
+	def static editWorkExperienceDetails = { browser,formData ->
+		new WorkExperienceForm().editWorkExperienceDetails(browser,formData)
+	}
+
+	def static editDocumentsDetails = { browser,formData ->
+		new CertificateForm().editDocumentsDetails(browser,formData)
+	}
+
+	def static deleteCertificate = { browser,formData ->
+		println "Inside delete Cert:::::::::::::"
+		new CertificateForm().deleteCertificate(browser,formData)
+	}
 
 
 	static final class BasicInformationForm extends WebForm {
 
-		//CompanyRegistration form elements
+		//Basic Information form elements
 
-		private static final def FIRST_NAME         = ".//div[@class='basic-info-container ']//input[@id='fname']"
+		private static final def FIRST_NAME                	  = ".//div[@class='basic-info-container ']//input[@id='fname']"
 
-		private static final def MIDDLE_NAME        = ".//div[@class='basic-info-container ']//input[@id='mname']"
+		private static final def MIDDLE_NAME                  = ".//div[@class='basic-info-container ']//input[@id='mname']"
 
-		private static final def LAST_NAME          = ".//div[@class='basic-info-container ']//input[@id='lname']"
+		private static final def LAST_NAME                    = ".//div[@class='basic-info-container ']//input[@id='lname']"
 
-		private static final def GENDER             = ".//div[@class='basic-info-container ']//select[@id='gender_new']"
+		private static final def GENDER                       = ".//div[@class='basic-info-container ']//select[@id='gender_new']"
 
-		private static final def CAL_BTN            =  ".//div[@class='basic-info-container ']//button[@ng-click='opendobcalendar()']"
+		private static final def CAL_BTN                      =  ".//div[@class='basic-info-container ']//button[@ng-click='opendobcalendar()']"
 
-		private static final def SELECT_DOB         = ".//*[@id='ui-datepicker-div']/table/tbody/tr/td/a"
+		private static final def SELECT_DOB                   = ".//*[@id='ui-datepicker-div']/table/tbody/tr/td/a"
 
-		private static final def MARITAL_STATUS     = ".//div[@class='basic-info-container ']//select[@name='marital_new']"
+		private static final def MARITAL_STATUS               = ".//div[@class='basic-info-container ']//select[@name='marital_new']"
 
-		private static final def ADD_LINE_1         = ".//div[@class='basic-info-container ']//input[@id='address1']"
+		private static final def ADD_LINE_1                   = ".//div[@class='basic-info-container ']//input[@id='address1']"
 
-		private static final def ADD_LINE_2         = ".//div[@class='basic-info-container ']//input[@id='address2']"
+		private static final def ADD_LINE_2  			      = ".//div[@class='basic-info-container ']//input[@id='address2']"
 
-		private static final def ADD_LINE_3         = ".//div[@class='basic-info-container ']//input[@id='address3']"
+		private static final def ADD_LINE_3   			      = ".//div[@class='basic-info-container ']//input[@id='address3']"
 
-		private static final def CITY               = ".//div[@class='basic-info-container ']//input[@id='city']"
+		private static final def CITY       		          = ".//div[@class='basic-info-container ']//input[@id='city']"
 
-		private static final def CITY_AUTOSELCT     = ".//div[@class='pac-container pac-logo'][last()]/descendant::span[@class='pac-matched']"
+		private static final def CITY_AUTOSELCT    			  = ".//div[@class='pac-container pac-logo'][last()]/descendant::span[@class='pac-matched']"
 
-		private static final def PIN_CODE           = ".//div[@class='basic-info-container ']//input[@name='pincode']"
+		private static final def PIN_CODE    			      = ".//div[@class='basic-info-container ']//input[@name='pincode']"
 
-		private static final def EMAIL_ID           = ".//div[@class='basic-info-container ']//input[@id='emailId']"
+		private static final def EMAIL_ID        		      = ".//div[@class='basic-info-container ']//input[@id='emailId']"
 
-		private static final def MOBILE_NUM         = ".//div[@class='basic-info-container ']//input[@id='mobileno']"
+		private static final def MOBILE_NUM       			  = ".//div[@class='basic-info-container ']//input[@id='mobileno']"
 
-		private static final def SEND_OTP_BTN       = ".//div[@class='col-md-3']/button[@class='full-width button-secondary btn-small']"
+		private static final def SEND_OTP_BTN  			      = ".//div[@class='col-md-3']/button[@class='full-width button-secondary btn-small']"
 
-		private static final def RESEND_OTP         = ".//div[@class='col-md-3']/h4[@class='col-md-12 link-secondary pt_13']"
+		private static final def RESEND_OTP       			  = ".//div[@class='col-md-3']/h4[@class='col-md-12 link-secondary pt_13']"
 
-		private static final def OTP_TEXTBOX        = ".//div[@class='basic-info-container ']//input[@id='otp']"
+		private static final def OTP_TEXTBOX     			  = ".//div[@class='basic-info-container ']//input[@id='otp']"
 
-		private static final def UPDATE_BUTTON      = ".//*[@id='edit_profile_container']//form//div[@class='col-md-3']//button[@class='ptb_6 btn button-primary']"
+		private static final def UPDATE_BUTTON     			  = ".//*[@id='edit_profile_container']//form//div[@class='col-md-3']//button[@class='ptb_6 btn button-primary']"
 
-		private static final def UPLOAD_PROFILE_IMAGE_LINK  = ".//*[@id='edit_profile']/div[2]/label/span[1]"
+		private static final def UPLOAD_PROFILE_IMAGE_LINK    = ".//*[@id='edit_profile']/div[2]/label/span[1]"
 
-		private static final def CHANGE_PROFILE_IMAGE_LINK = ".//span[contains(text(), 'Change Image')]"
+		private static final def CHANGE_PROFILE_IMAGE_LINK    = ".//span[contains(text(), 'Change Image')]"
 
-		private static final def UPLOAD_PROFILE_IMAGE_BUTTON = ".//button[@id='upload_image']"
+		private static final def UPLOAD_PROFILE_IMAGE_BUTTON  = ".//button[@id='upload_image']"
 
-		private static final def UPLOAD_IMAGE_SUBMIT = ".//*[@id='btnCrop']"
+		private static final def UPLOAD_IMAGE_SUBMIT 		  = ".//*[@id='btnCrop']"
 
-		private static final def SUCCESS_MESSAGE  = ".//*[@id='main_page']/div[1]/div/span"
+		private static final def SUCCESS_MESSAGE			  = ".//*[@id='main_page']/div[1]/div/span"
 
-		private static final def FIELDS = [FIRST_NAME, MIDDLE_NAME, LAST_NAME, GENDER, CAL_BTN, MARITAL_STATUS, ADD_LINE_1, ADD_LINE_2, ADD_LINE_3, CITY, PIN_CODE, EMAIL_ID, MOBILE_NUM]
+		private static final def FIELDS						  = [FIRST_NAME, MIDDLE_NAME, LAST_NAME, GENDER, CAL_BTN, MARITAL_STATUS, ADD_LINE_1, ADD_LINE_2, ADD_LINE_3, CITY, PIN_CODE, EMAIL_ID, MOBILE_NUM]
 
-		// the error fields.
-		private static final def FORM_ERROR = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
+		private static final def FORM_ERROR                   = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
-		private static final def FIELD_ERROR_1 = ".//span[@class='error_message']"
+		private static final def FIELD_ERROR_1                = ".//span[@class='error_message']"
 
-		private static final def FIELD_ERROR_2 = ".//span[@class='error_message ng-hide']/span"
+		private static final def FIELD_ERROR_2                = ".//span[@class='error_message ng-hide']/span"
 
 		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR]
 
@@ -168,13 +178,10 @@ final class UserEditProfilePage extends WebPage {
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
-
-			println ("BasicInformationForm.populateFields - data: " + formData)
 			def outcome = WebForm.checkFormFieldsData(formData, FIELDS)
 			if(outcome.isSuccess()){
 				for(int i = 0; i <= FIELDS.size()-1; i++){
 					def tagName = browser.getTagName(FIELDS[i])
-					println "The tagname is for field "+FIELDS[i]+ "and "+tagName
 					if(FIELDS[i].equals(CAL_BTN) ){
 						if(formData[i] !=""){
 							//							WebForm.inputData(browser, FIELDS[i], tagName,formData[i])
@@ -195,10 +202,8 @@ final class UserEditProfilePage extends WebPage {
 							browser.delay(2000)
 						}
 					} else if(FIELDS[i].equals(EMAIL_ID)){
-						println " Inside email field"
 						if(formData[i].contains("@")){
 							KPCommonPage.userName=formData[i]
-							println " 1::: "+KPCommonPage.userName+" 2::: "+formData[i]
 							browser.populateField(FIELDS[i], KPCommonPage.userName)
 							//WebForm.inputData(browser,FIELDS[i],tagname,formData[i])
 						}else{
@@ -240,7 +245,6 @@ final class UserEditProfilePage extends WebPage {
 			browser.scrollToElement(browser.getElement(Browser.XPATH, submitButton))
 			browser.delay(1000)
 			//browser.scrollToElement(browser.getElement(Browser.XPATH, FIRST_NAME))
-			browser.delay(1000)
 			if(browser.checkEnabled(submitButton)){
 				browser.click submitButton // submit the form.
 				browser.delay(1000)
@@ -256,7 +260,6 @@ final class UserEditProfilePage extends WebPage {
 			browser.click(UPLOAD_PROFILE_IMAGE_BUTTON)
 			browser.delay(1000)
 			dataToEnter = browser.getCurrentDirectory()+formData[0]
-			println "dataToEnter ::::: "+dataToEnter
 			browser.uploadFile(dataToEnter)
 			browser.delay(2000)
 			browser.click(UPLOAD_IMAGE_SUBMIT)
@@ -264,11 +267,8 @@ final class UserEditProfilePage extends WebPage {
 			def userUploadText = browser.gettext(SUCCESS_MESSAGE)
 			def actualUploadMsg = BasicInformationErrorMessageMap.get('profileUploadSuccess')
 			def imageSource = browser.gettext(KPCommonPage.USER_PROFILE_PIC, "src")
-			println "Image Source ::::::::::::: "+imageSource
 			def splittedimageSource = imageSource.split("\\?")
-			println "imageSource----------> "+splittedimageSource
 			KPCommonPage.srcUserProfilePic = splittedimageSource[0]
-			println "KPCommonPage.srcUserProfilePic  --------------------------> "+KPCommonPage.srcUserProfilePic
 
 			if(userUploadText.equals(actualUploadMsg)){
 				return new SuccessOutcome()
@@ -282,77 +282,77 @@ final class UserEditProfilePage extends WebPage {
 
 		//Education qualification form Elements
 
-		private static final def X_PERCENTAGE       = ".//div[@class='edu-qual-container ']//input[@id='xPercentage']"
+		private static final def X_PERCENTAGE              = ".//div[@class='edu-qual-container ']//input[@id='xPercentage']"
 
-		private static final def X_SCHOOL_NAME      = ".//div[@class='edu-qual-container ']//input[@id='xSchoolName']"
+		private static final def X_SCHOOL_NAME            = ".//div[@class='edu-qual-container ']//input[@id='xSchoolName']"
 
-		private static final def X_YEAR_PASS        = ".//div[@class='edu-qual-container ']//select[@name='xYearOfPass']"
+		private static final def X_YEAR_PASS              = ".//div[@class='edu-qual-container ']//select[@name='xYearOfPass']"
 
-		private static final def XII_PERCENTAGE     = ".//div[@class='edu-qual-container ']//input[@id='xiiPercentage']"
+		private static final def XII_PERCENTAGE           = ".//div[@class='edu-qual-container ']//input[@id='xiiPercentage']"
 
-		private static final def XII_SCHOOL_NAME    = ".//div[@class='edu-qual-container ']//input[@id='xiiSchoolName']"
+		private static final def XII_SCHOOL_NAME          = ".//div[@class='edu-qual-container ']//input[@id='xiiSchoolName']"
 
-		private static final def XII_YEAR_PASS      = ".//div[@class='edu-qual-container ']//select[@name='xiiYearOfPass']"
+		private static final def XII_YEAR_PASS            = ".//div[@class='edu-qual-container ']//select[@name='xiiYearOfPass']"
 
-		private static final def DIPLOMA_PERCENTAGE = ".//div[@class='edu-qual-container ']//input[@id='diplomaPercentage']"
+		private static final def DIPLOMA_PERCENTAGE       = ".//div[@class='edu-qual-container ']//input[@id='diplomaPercentage']"
 
-		private static final def DIPLOMA_COLLEGE    = ".//div[@class='edu-qual-container ']//input[@id='diplomaCollegeName']"
+		private static final def DIPLOMA_COLLEGE          = ".//div[@class='edu-qual-container ']//input[@id='diplomaCollegeName']"
 
-		private static final def DIPLOMA_COURSE     = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Course Name']"
+		private static final def DIPLOMA_COURSE           = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Course Name']"
 
-		private static final def DIPLOMA_START      = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='diplomaStartYear']"
+		private static final def DIPLOMA_START            = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='diplomaStartYear']"
 
-		private static final def DIPLOMA_END        = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='diplomaEndYear']"
+		private static final def DIPLOMA_END              = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='diplomaEndYear']"
 
-		private static final def UG_PERCENTGE       = ".//div[@class='edu-qual-container ']//input[@id='undergraduatePercentage']"
+		private static final def UG_PERCENTGE             = ".//div[@class='edu-qual-container ']//input[@id='undergraduatePercentage']"
 
-		private static final def UG_COLLEGE         = ".//div[@class='edu-qual-container ']//input[@id='undergraduateSchoolName']"
+		private static final def UG_COLLEGE               = ".//div[@class='edu-qual-container ']//input[@id='undergraduateSchoolName']"
 
-		private static final def UG_FIELD           = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Field Of Study']"
+		private static final def UG_FIELD                 = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Field Of Study']"
 
-		private static final def UG_START           = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='undergraduateStartYear']"
+		private static final def UG_START                 = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='undergraduateStartYear']"
 
-		private static final def UG_END             = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='undergraduateEndYear']"
+		private static final def UG_END                   = ".//div[@class='edu-qual-container ']//div[@ng-init='getYears(-46,46)']/select[@name='undergraduateEndYear']"
 
-		private static final def PG_PERCENTGE       = ".//div[@class='edu-qual-container ']//input[@id='postgraduatePercentage']"
+		private static final def PG_PERCENTGE             = ".//div[@class='edu-qual-container ']//input[@id='postgraduatePercentage']"
 
-		private static final def PG_COLLEGE         = ".//div[@class='edu-qual-container ']//input[@id='postgraduateSchoolName']"
+		private static final def PG_COLLEGE               = ".//div[@class='edu-qual-container ']//input[@id='postgraduateSchoolName']"
 
-		private static final def PG_SPECIALIZATION   = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Specialization']"
+		private static final def PG_SPECIALIZATION        = ".//div[@class='edu-qual-container ']//input[@ placeholder='Select Specialization']"
 
-		private static final def PG_START           = ".//div[@class='edu-qual-container ']//select[@name='postgraduateStartYear']	"
+		private static final def PG_START                 = ".//div[@class='edu-qual-container ']//select[@name='postgraduateStartYear']	"
 
-		private static final def PG_END             = ".//div[@class='edu-qual-container ']//select[@name='postgraduateEndYear']"
+		private static final def PG_END                   = ".//div[@class='edu-qual-container ']//select[@name='postgraduateEndYear']"
 
-		private static final def SCROLL                 = ".//*[@id='main_page']/div[2]/div/div[2]/div[3]/div/h4"
+		private static final def SCROLL                   = ".//*[@id='main_page']/div[2]/div/div[2]/div[3]/div/h4"
 
-		private static final def ADDNEWCOURSELINK   	= ".//a[@ng-click='addQualification(eduText)']"
+		private static final def ADDNEWCOURSELINK   	  = ".//a[@ng-click='addQualification(eduText)']"
 
-		private static final def ADDNEWFIELDOFSTUDYLINK = ".//a[@ng-click='addQualification(fieldOfStudyText)']"
+		private static final def ADDNEWFIELDOFSTUDYLINK   = ".//a[@ng-click='addQualification(fieldOfStudyText)']"
 
 		private static final def ADDNEWSPECIALIZATIONLINK = ".//a[@ng-click='addQualification(specializationText)']"
 
-		private static final def CREATENEWCOURSE   = ".//li[@ng-click=\'\$mdAutocompleteCtrl.select(\$index)\'][@role='button']"
+		private static final def CREATENEWCOURSE          = ".//li[@ng-click=\'\$mdAutocompleteCtrl.select(\$index)\'][@role='button']"
 
-		private static final def CREATENEWFIELDOFSTUDY = ".//span [@md-highlight-text='fieldOfStudyText']"
+		private static final def CREATENEWFIELDOFSTUDY    = ".//span [@md-highlight-text='fieldOfStudyText']"
 
 		private static final def CREATENEWSPECIALIZATION  = ".//span [@md-highlight-text='specializationText']"
 
-		private static final def EXISTINGCOURSENAME = ".//span[@md-highlight-text='eduText']/span[@class='highlight']"
+		private static final def EXISTINGCOURSENAME       = ".//span[@md-highlight-text='eduText']/span[@class='highlight']"
 
-		private static final def EXISTINGFIELDOFSTUDY = ".//span[@md-highlight-text='fieldOfStudyText']"
+		private static final def EXISTINGFIELDOFSTUDY     = ".//span[@md-highlight-text='fieldOfStudyText']"
 
-		private static final def EXISTINGSPECIALIZATION = ".//span[@md-highlight-text='specializationText']"
+		private static final def EXISTINGSPECIALIZATION   = ".//span[@md-highlight-text='specializationText']"
 
-		private static final def UPDATE_BUTTON      = ".//*[@id='edit_profile_container']/div[1]/div[2]/div/div/div/div[1]/div/div/form/div[6]/div/button"
+		private static final def UPDATE_BUTTON            = ".//*[@id='edit_profile_container']/div[1]/div[2]/div/div/div/div[1]/div/div/form/div[6]/div/button"
 
-		private static final def FIELDS= [X_PERCENTAGE, X_SCHOOL_NAME, X_YEAR_PASS, XII_PERCENTAGE, XII_SCHOOL_NAME, XII_YEAR_PASS, DIPLOMA_PERCENTAGE, DIPLOMA_COLLEGE, DIPLOMA_COURSE, DIPLOMA_START, DIPLOMA_END, UG_PERCENTGE, UG_COLLEGE, UG_FIELD, UG_START, UG_END, PG_PERCENTGE, PG_COLLEGE, PG_SPECIALIZATION, PG_START, PG_END]
+		private static final def FIELDS                   = [X_PERCENTAGE, X_SCHOOL_NAME, X_YEAR_PASS, XII_PERCENTAGE, XII_SCHOOL_NAME, XII_YEAR_PASS, DIPLOMA_PERCENTAGE, DIPLOMA_COLLEGE, DIPLOMA_COURSE, DIPLOMA_START, DIPLOMA_END, UG_PERCENTGE, UG_COLLEGE, UG_FIELD, UG_START, UG_END, PG_PERCENTGE, PG_COLLEGE, PG_SPECIALIZATION, PG_START, PG_END]
 
-		private static final def FIELD_ERROR = ".//*[@class='edu-qual-container ']//span[@class='error_message']/span[@aria-hidden='false']"
+		private static final def FIELD_ERROR              = ".//*[@class='edu-qual-container ']//span[@class='error_message']/span[@aria-hidden='false']"
 
-		private static final def FORM_ERROR    = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
+		private static final def FORM_ERROR               = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
-		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR, FIELD_ERROR]
+		private static final def ERROR_MESSAGE_FIELDS     = [FORM_ERROR, FIELD_ERROR]
 
 		//error message map (Key-Value Pair)
 		def static final EducationQualificationErrorMessageMap = [
@@ -379,7 +379,6 @@ final class UserEditProfilePage extends WebPage {
 
 
 		def static final populateFields = { browser, formData ->
-			println "----------------------------------------------------------------------------------------------------------------------------------------------------------------"
 			def outcome= WebForm.checkFormFieldsData(formData,FIELDS)
 			if(outcome.isSuccess()){
 				for(int i=0;i<FIELDS.size();i++){
@@ -411,7 +410,6 @@ final class UserEditProfilePage extends WebPage {
 					}
 
 					KPCommonPage.allEducationDetails.add(formData[i])
-					println "Hello::::::----------------------> "+KPCommonPage.allEducationDetails
 				}
 			}
 			return outcome
@@ -423,7 +421,6 @@ final class UserEditProfilePage extends WebPage {
 		 * @param data  array containing test data
 		 */
 		def final submit(browser, data) {
-			println "Inside Education Qualification Submit :::::::::::::"
 			def actualValidationMsg = submitForm browser, FIELDS, UPDATE_BUTTON, data, ERROR_MESSAGE_FIELDS
 			def actualValidationMsgKeys = getActualErrorMessageKeys(actualValidationMsg, EducationQualificationErrorMessageMap)
 			def outcome = new SuccessOutcome();
@@ -448,9 +445,11 @@ final class UserEditProfilePage extends WebPage {
 
 	static final class WorkExperienceForm extends WebForm {
 
-		//CompanyRegistration form elements
+		//Work Experience form elements
 
-		private static def INDUSTRY     		                 = ".//div[@class='work-exp-container']//md-autocomplete[@aria-required='false']/md-autocomplete-wrap/input"
+		private static def INDUSTRY     		                 = ".//div[@class='work-exp-container']//md-autocomplete-wrap/input[@placeholder='Select Industry'][@aria-invalid='true']"
+
+		private static def INDUSTRY1							 = ".//div[@class='work-exp-container']//md-autocomplete-wrap/input[@placeholder='Select Industry'][@aria-invalid='false']"
 
 		private static final def CREATENEW_INDUSTRY_LINK         = ".//a[@ng-click='addIndustry(searchText)']"
 
@@ -460,19 +459,29 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def JOB_ROLE     				     = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.jobRole'][@aria-invalid='true']"
 
+		private static final def JOB_ROLE1     				     = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.jobRole'][@aria-invalid='false']"
+
 		private static final def COMPANY_NAME  					 = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.companyName'][@aria-invalid='true']"
 
-		private static final def TIMEPERIOD_STARTMONTH 		     = ".//div[@class='work-exp-container']//select[@class='form-control margin-month ng-pristine ng-untouched ng-invalid ng-invalid-required'][@id='category']"
+		private static final def COMPANY_NAME1 					 = ".//div[@class='work-exp-container']//input[@ng-model='userProfiles.companyName'][@aria-invalid='false']"
 
-		private static final def TIMEPERIOD_STARTYEAR	         = ".//div[@class='work-exp-container']//select[@class='form-control margin-year ng-pristine ng-untouched ng-invalid ng-invalid-required'][@ng-model='userProfiles.startYear']"
+		private static final def TIMEPERIOD_STARTMONTH 		     = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.startMonth'][@aria-invalid='true']"
 
-		private static final def TIMEPERIOD_ENDMONTH             = ".//div[@class='work-exp-container']//select[@class='form-control margin-month ng-pristine ng-untouched ng-invalid ng-invalid-required'][@id='categoryEndMonth']"
+		private static final def TIMEPERIOD_STARTMONTH1 	     = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.startMonth'][@aria-invalid='false']"
 
-		private static final def TIMEPERIOD_ENDYEAR   	         = ".//div[@class='work-exp-container']//select[@class='form-control margin-year ng-pristine ng-untouched ng-invalid ng-invalid-required'][@ng-model='userProfiles.endYear']"
+		private static final def TIMEPERIOD_STARTYEAR	         = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.startYear'][@aria-invalid='true']"
+
+		private static final def TIMEPERIOD_STARTYEAR1	         = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.startYear'][@aria-invalid='false']"
+
+		private static final def TIMEPERIOD_ENDMONTH             = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.endMonth'][@aria-invalid='true']"
+
+		private static final def TIMEPERIOD_ENDMONTH1            = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.endMonth'][@aria-invalid='false']"
+
+		private static final def TIMEPERIOD_ENDYEAR   	         = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.endYear'][@aria-invalid='true']"
+
+		private static final def TIMEPERIOD_ENDYEAR1             = ".//div[@class='work-exp-container']//select[@ng-model='userProfiles.endYear'][@aria-invalid='false']"
 
 		private static final def CURRENTLY_WORKING_HERE 		 = ".//div[@class='work-exp-container']//md-checkbox[@type='checkbox']"
-
-		private static final def WORK_EXPERIENCE_ADD_BUTTON      = "//div[@class='work-exp-container']//button[@class='btn button-secondary']"
 
 		private static final def DELETE_WORK_EXPERIENCE          = "//div[@class='work-exp-container']//a[contains(text(),'DELETE')]"
 
@@ -484,7 +493,11 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def FIELDS 						 = [INDUSTRY, JOB_ROLE, COMPANY_NAME, TIMEPERIOD_STARTMONTH, TIMEPERIOD_STARTYEAR, TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR, CURRENTLY_WORKING_HERE]
 
+		private static final def FIELDS1                         = [INDUSTRY1, JOB_ROLE1, COMPANY_NAME1, TIMEPERIOD_STARTMONTH1, TIMEPERIOD_STARTYEAR1, TIMEPERIOD_ENDMONTH1, TIMEPERIOD_ENDYEAR1, CURRENTLY_WORKING_HERE]
+
 		private static final def FIELDSAFTERUNCHECK              = [TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR]
+
+		public static def FIELDS_TO_ENTER						 = FIELDS
 		// the error fields.
 		private static final def FORM_ERROR                      = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
@@ -507,18 +520,16 @@ final class UserEditProfilePage extends WebPage {
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
-
-			println ("WorkExperience.populateFields - data: " + formData)
-			def outcome = WebForm.checkFormFieldsData(formData, FIELDS)
-
+			def outcome = WebForm.checkFormFieldsData(formData, FIELDS_TO_ENTER)
 			if(outcome.isSuccess()){
-				for(int j = 0; j < FIELDS.size(); j++){
-					def tagName= browser.getTagName(FIELDS[j])
-					if(FIELDS[j].equals(INDUSTRY)){
-						browser.scrollToElement(browser.getElement(Browser.XPATH, FIELDS[j]))
+				for(int j = 0; j < FIELDS_TO_ENTER.size(); j++){
+					browser.delay(2000)
+					def tagName = browser.getTagName(FIELDS_TO_ENTER[j])
+					if(FIELDS_TO_ENTER[j].equals(INDUSTRY)){
+						browser.scrollToElement(browser.getElement(Browser.XPATH, FIELDS_TO_ENTER[j]))
 						browser.delay(500)
 						if(formData[j] != ""){
-							browser.populateField(FIELDS[j], formData[j])
+							browser.populateField(FIELDS_TO_ENTER[j], formData[j])
 							browser.delay(1000)
 							if(browser.isDisplayed(CREATENEW_INDUSTRY_LINK)){
 								browser.click(CREATENEW_INDUSTRY_LINK)
@@ -528,51 +539,40 @@ final class UserEditProfilePage extends WebPage {
 								KPCommonPage.selectAutoComplete(browser, INDUSTRY_AUTOCOMPLETE, formData[j].trim())
 							}
 						} else{
-							browser.populateField(FIELDS[j], formData[j])
+							browser.populateField(FIELDS_TO_ENTER[j], formData[j])
 						}
-					}else if(FIELDS[j].equals(CURRENTLY_WORKING_HERE)){
+					}else if(FIELDS_TO_ENTER[j].equals(CURRENTLY_WORKING_HERE)){
 
 						if(formData[j].equals("1")){
-							println "1"
-							WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
-							println "2"
-							println "CHECKED"
+							WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
 							KPCommonPage.WorkExperienceDetails.add("Till Date .")
-							println "3"
 						}else if(formData[j].equals("0")){
-							for(int k=FIELDSAFTERUNCHECK.size();k<=FIELDSAFTERUNCHECK.size();k--){
-								WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
-								println "4"
-								WebForm.inputData(browser,FIELDS[j-k],tagName,formData[j-k])
-								println "5"
+							WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
+							browser.delay(2000)
+							for(int k=2;k>=1;k--){
+								browser.selectDropdownValue(FIELDS[j-k], formData[j-k])
 								KPCommonPage.WorkExperienceDetails.add(formData[j-k].trim())
-								println"6"
 							}
 						}
-					}else if(FIELDS[j].equals(TIMEPERIOD_ENDYEAR) || FIELDS[j].equals(TIMEPERIOD_ENDMONTH)){
-					println "7"
-					println  "formData[j]::::::::::::::::::::::::: "+formData[j]
-						if(formData[j]!=""){
-							println "8"
-							WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
-							println "9"
+					}else if(FIELDS_TO_ENTER[j].equals(JOB_ROLE) || FIELDS_TO_ENTER[j].equals(JOB_ROLE1)){
+						WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
+						KPCommonPage.WorkExperienceDetails.add(formData[j].trim())
+						KPCommonPage.WorkExperienceJobRole.add(formData[j].trim())
+					}else if(FIELDS_TO_ENTER[j].equals(TIMEPERIOD_ENDMONTH) || FIELDS_TO_ENTER[j].equals(TIMEPERIOD_ENDYEAR) || FIELDS_TO_ENTER[j].equals(TIMEPERIOD_ENDMONTH1) || FIELDS_TO_ENTER[j].equals(TIMEPERIOD_ENDYEAR1)){
+						def fieldEnabled = browser.checkEnabled(FIELDS_TO_ENTER[j])
+						if(formData[j]!="" && fieldEnabled == true){
+							WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
 							KPCommonPage.WorkExperienceDetails.add(formData[j].trim())
-							println "10"
 						}
 					}else{
-						WebForm.inputData(browser,FIELDS[j],tagName,formData[j])
-						println "Adding------------>"
+						WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
 						KPCommonPage.WorkExperienceDetails.add(formData[j].trim())
-						println "Added------------>"
 						/*if(FIELDS[j].equals(TIMEPERIOD_ENDYEAR)){
 						 browser.pressTab(TIMEPERIOD_ENDYEAR)
 						 }*/
 					}
 				}
 			}
-			println "121212121"
-			println "KPCommonPage.WorkExperienceDetails----------> "+KPCommonPage.WorkExperienceDetails
-			println "767676767676"
 			return outcome
 		}
 
@@ -599,9 +599,35 @@ final class UserEditProfilePage extends WebPage {
 			}
 			browser.getValidationMessages errFields
 		}
+
+		def static deleteWorkExperience = { browser, formData ->
+			def attributeValue = []
+			def jobRoleElements = browser.getLists(JOB_ROLE1,"value")
+			def deleteWorkExpList = browser.getListElements(DELETE_WORK_EXPERIENCE)
+			for(int i=0;i<jobRoleElements.size();i++){
+				if(jobRoleElements[i].equalsIgnoreCase(formData[0])){
+					browser.clickElement(deleteWorkExpList[i])
+					//browser.scrollToElement2(browser.getElement(Browser.XPATH,DELETE_OPTION_YES))
+					browser.delay(2000)
+					browser.click(DELETE_OPTION_YES)
+					browser.delay(4000)
+				}
+			}
+		}
+
+		def static editWorkExperienceDetails = { browser, formData ->
+			KPCommonPage.WorkExperienceDetails.clear()
+			if(browser.isDisplayed(JOB_ROLE1)){
+				WorkExperienceForm.FIELDS_TO_ENTER = FIELDS1
+				WorkExperienceForm.populateFields(browser, formData)
+			}
+		}
 	}
 
+
 	static final class SkillsForm extends WebForm {
+
+		//Skills form elements
 
 		private static final def SKILLS				       = ".//div[@class='skills-container']//input[@name='multipleSelectSkills']"
 
@@ -627,11 +653,10 @@ final class UserEditProfilePage extends WebPage {
 		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR]
 
 		//error message map (Key-Value Pair)
-		def static final skillsErrorMessageMap = [update_success :"User data updated successfully"]
+		def static final skillsErrorMessageMap = [update_success : "User data updated successfully"]
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
-			println ("LoginForm.populateFields - data: " + formData)
 			def outcome = WebForm.checkFormFieldsData(formData, FIELDS)
 			if(outcome.isSuccess()){
 				for(int i = 0; i < FIELDS.size(); i++){
@@ -691,8 +716,6 @@ final class UserEditProfilePage extends WebPage {
 			browser.scrollToElement2(SCROLL_TO_VIEW_SKILLS)
 			def skillsOnViewProfile = browser.getLists(SKILLS_ON_VIEW_PROFILE)
 			def commonSkills = KPCommonPage.skills
-			println "commonSkills:::: "+commonSkills
-			println "skillsOnViewProfile:::::::: "+skillsOnViewProfile
 			for(int k=0;k<commonSkills.size();k++){
 				formDataSkills.add(commonSkills[k].trim())
 			}
@@ -793,9 +816,13 @@ final class UserEditProfilePage extends WebPage {
 
 	static final class CertificateForm extends WebForm {
 
+		//Certificates form elements                                                               
+
 		private static final def CHOOSE_FILE_BUTTON     	= ".//div[@class='mb_10 ng-binding']/label[@class='button-pri'][@aria-hidden='false']"
 
-		private static final def CERTIFICATE_NAME      		= ".//div[@class='certificates-container']//md-autocomplete[@aria-required='false']/md-autocomplete-wrap/input"
+		private static final def CERTIFICATE_NAME      		= ".//div[@class='certificates-container']//input[@class='ng-pristine ng-untouched ng-scope ng-invalid ng-invalid-required']"//".//*[@class='certificates-container']/descendant::md-autocomplete-wrap/input"
+
+		private static final def CERTIFICATE_NAME1			= ".//div[@class='certificates-container']//input[@placeholder='Enter Certificate Name'][@aria-invalid='false']"
 
 		private static final def CREATENEW_CERTIFICATE_LINK = ".//a[@ng-click='addCertificate(searchText)']"
 
@@ -803,57 +830,120 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def CERTIFICATE_AUTOCOMPLETE   = ".//md-autocomplete-parent-scope[@class='ng-scope']"
 
+		private static final def DELETE_CERTIFICATE_LINK	= ".//div[@class='certificates-container']/descendant::a[contains(text(), 'DELETE')]"
+
 		private static final def FORM_ERROR                 = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
 		private static final def FIELD_ERROR                = "//div[@class='work-exp-container']//span[@class='error_message']/span"
-
+		
+		private static final def DELETE_OPTION_YES          =  ".//button[@ng-click='dialog.hide()']/span[@class='ng-binding ng-scope']"
+		
+		private static final def DELETE_OPTION_NO 			= ".//button[@class='md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple']"
+		
 		private static final def UPDATE_BUTTON              = ".//*[@id='edit_profile_container']//form//div[@class='col-md-3']//button[@class='ptb_6 btn button-primary']"
 
 		private static final def FIELDS 			        = [CHOOSE_FILE_BUTTON, CERTIFICATE_NAME]
 
+		private static final def FIELDS1					= [CERTIFICATE_NAME1]
+
+		private static  def FIELDS_TO_ENTER1			    = FIELDS
+
 		// the error fields.
-		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR, FIELD_ERROR]
+		private static final def ERROR_MESSAGE_FIELDS       = [FORM_ERROR, FIELD_ERROR]
 
 		//error message map (Key-Value Pair)
-		def static final certificateErrorMessageMap = [update_success :"User data updated successfully"]
+		def static final certificateErrorMessageMap = [
+			update_success   :"User data updated successfully",
+			cert_req         : "Certificate is required",
+			certName_req     : "Certificate Name is required",
+			invalid_File     : "Not a valid file please upload supported file ex: doc, docx, pdf, rtf, jpeg, png ,jpg",
+			invalidFile_Size : "File size should less then 2 MB.",
+			docRemoveSuccess : "User Document removed successfully."
+		]
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
-			def outcome = WebForm.checkFormFieldsData(formData, FIELDS)
+			def outcome = WebForm.checkFormFieldsData(formData, FIELDS_TO_ENTER1)
 			if(outcome.isSuccess()){
-				for(int i = 0; i < FIELDS.size(); i++){
-					def tagName = browser.getTagName(FIELDS[i])
+				for(int i = 0; i < FIELDS_TO_ENTER1.size(); i++){
+					def tagName = browser.getTagName(FIELDS_TO_ENTER1[i])
 					println "tagname for ::::::::::::::: "+i+":::::::::::: "+tagName
 
-					if(FIELDS[i].equalsIgnoreCase(CHOOSE_FILE_BUTTON)){
+					if(FIELDS_TO_ENTER1[i].equalsIgnoreCase(CHOOSE_FILE_BUTTON)){
 						if(formData[i]!=null && !formData[i].equals("")){
 							browser.click(CHOOSE_FILE_BUTTON)
 							browser.uploadFile(formData[i])
 							browser.delay(500)
 						}
-					}
-
-					if(FIELDS[i].equalsIgnoreCase(CERTIFICATE_NAME)){
-						println "Inside Input Data"
-						browser.populateField(FIELDS[i], formData[i])
-						println "Outside input data"
+					}else{
+					browser.delay(2000)
+					println "IS DISPLAYED:::::::::::::: "+browser.isDisplayed(CERTIFICATE_NAME)
+						WebForm.inputData(browser,FIELDS_TO_ENTER1[i],tagName,formData[i])
 						if(browser.isDisplayed(CREATENEW_CERTIFICATE_LINK)){
-							println "6"
 							browser.click(CREATENEW_CERTIFICATE_LINK)
-							println "7"
 							browser.delay(500)
-							println "8"
 							browser.click(CREATENEW_CERTIFICATE)
-							println "9"
+							browser.delay(500)
+							KPCommonPage.docName.add(formData[i].trim())
 						}else{
-							println "10"
 							KPCommonPage.selectAutoComplete(browser, CERTIFICATE_AUTOCOMPLETE, formData[i].trim())
-							println "11"
+							KPCommonPage.docName.add(formData[i].trim())
 						}
 					}
 				}
 			}
 			return outcome
+		}
+
+		/**
+		 * To submit the form
+		 * @param browser browser instance
+		 * @param data  array containing test data
+		 */
+		def final submit(browser, data) {
+			def actualValidationMsg = submitForm browser, FIELDS, UPDATE_BUTTON, data, ERROR_MESSAGE_FIELDS
+			def actualValidationMsgKeys = getActualErrorMessageKeys(actualValidationMsg, certificateErrorMessageMap)
+			def outcome = new SuccessOutcome();
+			outcome.setResultData(actualValidationMsgKeys)
+			return outcome
+		}
+
+		//override submitForm
+		def static submitForm = { browser, formFields, submitButton, data, errFields ->
+			browser.click submitButton // submit the form.
+			browser.delay(1000)
+			browser.getValidationMessages errFields // get the validation messages from the current page.
+		}
+
+		def static editDocumentsDetails = { browser,formData ->
+			KPCommonPage.docName.clear()
+			browser.delay(2000)
+			if(browser.isDisplayed(CERTIFICATE_NAME1)){
+				FIELDS_TO_ENTER1 = FIELDS1
+				CertificateForm.populateFields(browser, formData)
+			}
+		}
+
+		def static deleteCertificate = { browser,formData ->
+			def certificateDeletelink = browser.getListElements(DELETE_CERTIFICATE_LINK)
+			def certificateToDelete = browser.getLists(CERTIFICATE_NAME1,"value")
+			for(int i=0;i<certificateToDelete.size();i++){
+				if(certificateToDelete[i].trim().equalsIgnoreCase(formData[0].trim())){
+					browser.clickElement(certificateDeletelink[i])
+					browser.delay(2000)
+					browser.click(DELETE_OPTION_YES)
+					browser.delay(4000)
+					def actualUploadMsg = certificateErrorMessageMap.get('docRemoveSuccess')
+					def deleteDocMessage = browser.gettext(FORM_ERROR)
+					if(actualUploadMsg.equalsIgnoreCase(deleteDocMessage)){
+						new SuccessOutcome()
+					}else{
+					return KPCommonPage.returnFailureOutcome(browser, "CertificateDeleteMessageMismatchIssue", "Delete certificate messgae do not match")
+					}
+				}else{
+					return KPCommonPage.returnFailureOutcome(browser, "NoCertificateToDelete", "Certificate to delete was not found")
+				}
+			}
 		}
 	}
 }
