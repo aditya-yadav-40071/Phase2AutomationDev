@@ -78,9 +78,7 @@ abstract class WebForm {
 	 * @return  actualValidationMsgKeys  keys of the actual messages
 	 */
 	def static final getActualErrorMessageKeys(def actualMessages, def pageErrorMessageMap){
-
 		def actualValidationMsgKeys = []
-
 		for(validationMessage in actualMessages) {
 			pageErrorMessageMap.each { key, value ->
 				if(value == validationMessage) {
@@ -138,10 +136,10 @@ abstract class WebForm {
 				break
 
 			case "md-checkbox" :
-				/*if(data.trim().equals("1")){
-					browser.click(field)
-				}*/
-			browser.clickMdCheckBox(field,data)
+			/*if(data.trim().equals("1")){
+			 browser.click(field)
+			 }*/
+				browser.clickMdCheckBox(field,data)
 				break
 
 			case "label"	:
@@ -151,10 +149,12 @@ abstract class WebForm {
 				break
 
 			case "search" :
-			println ""
+				println ""
 				browser.scrollToElement2(field)
 				browser.populateField(field, data)
 				break
 		}
 	}
 }
+
+

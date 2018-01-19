@@ -20,13 +20,13 @@ import com.KPPhaseTwo.tools.Browser
 class KPCommonPage {
 
 	private static def RADIOID = ".//*[@name='radioName'][@value='radioValue']"
-	
+
 	private static def RADIO_BTN_XPATH1 = ".//input[@type='radio']"
-	
+
 	private static def SELECT_MONTH = ".//*[@class='ui-datepicker-month']"
-	
+
 	private static def SELECT_YEAR  = ".//*[@class='ui-datepicker-year']"
-	
+
 	private static def DAY = ".//*[@id='ui-datepicker-div']//a[@href='#']"
 
 	private static def JOB_LAST_DATE = ".//*[@id='jobLastDate']"
@@ -69,7 +69,21 @@ class KPCommonPage {
 
 	//Manage Users
 	private static def firstUserInList,profileEmailId,profilePassword,usersList,manageUsersSortByData
+
 	private static def adminPassword
+    //User
+	
+	private static def firstName
+	private static def middleName
+	private static def lastName
+	private static def userAge
+	private static def userMobileNo
+	private static def basicInfo = []
+	//Invited User
+	private static def invitedUserEmailId
+	private static def invitedUserPassword
+	private static def invitedUserSiteName
+	private static def invitedUserFirstName
 
 	//Organization
 	private static def ViewOrgDataVerify = []
@@ -86,6 +100,7 @@ class KPCommonPage {
 
 	//Post a job
 	private static def jobTitle,jobIndustry,eduQualification,jobSkills,prefferedCertificates
+	private static def jobDetailList = []
 
 	//Recommended Training
 	private static def noOnDashboard
@@ -106,12 +121,14 @@ class KPCommonPage {
 	private static def firstNameAdmin
 
 	//Edit User Profile
+	private static def dataList = []
+	private static def actualDataList = []
 	private static def skills = []
 	private static def allEducationDetails = []
 	private static def WorkExperienceDetails = []
 	private static def WorkExperienceJobRole = []
 	private static def docName = []
-
+	
 	//To return Failure outcome
 	static def returnFailureOutcome(def browser, def fileName, def message){
 		println message
@@ -166,23 +183,35 @@ class KPCommonPage {
 
 	//To select from the auto complete
 	static def selectAutoComplete(def browser, def autoCompleteList, def dataToSelect){
+		println "Inside SELECT AUTO COMPLETE"
 		def xpathToSelect
 		def lists = browser.getLists(autoCompleteList)
+		println "..........The Value from list is................ "+lists
 		xpathToSelect = browser.getListElements(autoCompleteList)
 		for(int i =0; i<= lists.size()-1;i++){
+			println "..........The Value from list of i is "+i+" ................ "+ lists[i]
+			println "..........dataToSelect is................................... "+ dataToSelect
 			if(lists[i].trim().equalsIgnoreCase(dataToSelect.trim())){
+				println "Matched"
 				browser.delay(3000)
+				println "Clicking"
 				browser.clickElement(xpathToSelect[i])
+				println "CLICKED"
 				browser.delay(2500)
 				break
 			}
 		}
 	}
 
+	
+	//i- .//div[@class="pac-container pac-logo"]/div
+	///city- .//div[@class='pac-container pac-logo']/div/span[2]/span[@class='pac-matched']
+	//.//div[@class='pac-container pac-logo']/div/span[3]
 	//To select city with state from the auto complete
 	static def selectAutoCompleteForCity(def browser, def autoCompleteList, def stateAutoCompleteList, def dataToSelect){
 		def xpathToSelect, stateSelect
 		def lists = browser.getLists(autoCompleteList)
+		println"lists------------------------------> "+lists
 		xpathToSelect = browser.getListElements(autoCompleteList)
 		stateSelect = browser.getLists(stateAutoCompleteList)
 		println "lists "+lists+ "\nxpathToSelect "+xpathToSelect+ "\nstateSelect "+stateSelect
@@ -259,7 +288,6 @@ class KPCommonPage {
 
 	//try to remove the selected skill and organization from the filter pod search
 	public static def removeSelectedAutosuggest(def browser,def autoSuggestList,def removeMarkList,def dataToRemove){
-		println ".....INSIDE REMOVE METHOD In KP Page ....."
 		def xpathToRemove
 		def lists = browser.getLists(autoSuggestList)
 		xpathToRemove = browser.getListElements(removeMarkList)
@@ -298,13 +326,20 @@ class KPCommonPage {
 	//To check the list is alphabetically sorted or not
 	public static def isSorted(def lst){
 		def sorted = true;
+		def temp
 		if(lst.size()>0){
+			
 			for (int i = 1; i < lst.size(); i++) {
-				if (lst.get(i-1).compareTo(lst.get(i)) > 0)
+				if(lst.get(i-1).length()>lst.get(i).length()){
+					temp     = lst[i-1]
+					lst[i-1] = lst[i]
+					lst[i]   = temp
+				}
+				println "The result is::::: "+lst.get(i-1).compareToIgnoreCase(lst.get(i))
+				if(lst.get(i-1).compareToIgnoreCase(lst.get(i)) > 0)
 				{
 					println " Comparing => "+lst.get(i-1)+" with "+lst.get(i)
 					sorted = false;
-
 				}
 			}
 		}
@@ -313,7 +348,6 @@ class KPCommonPage {
 
 
 	public static def isPodWishlistPageEmpty(def browser, def formMsgPath){
-
 		def errorMsg = browser.isDisplayed(formMsgPath)
 		if(errorMsg){
 			return errorMsg
@@ -392,5 +426,24 @@ class KPCommonPage {
 		}
 		else
 			println "Not a valid date"
+	}
+	
+	
+	public def static getFullName(def firstName,def middleName,def lastName){
+		def fullName
+		if(!firstName.equals(" ") && firstName!=null){
+			if(!middleName.equals(" ") && middleName!=null){
+				fullName = firstName +" "+ middleName
+			}else{
+				fullName = firstName
+			}
+			if(!lastName.equals(" ") && lastName!=null){
+				fullName = fullName+" "+ lastName
+			}else{
+				fullName
+			}
+		}
+		println "FULL NAME IS "+fullName
+		return fullName
 	}
 }

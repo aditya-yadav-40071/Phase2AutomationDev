@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * Created by Aditya on 06/04/2017
+ * Created by Aditya on 28/11/2017
  */
 
 
@@ -50,8 +50,8 @@ final class UserEditProfilePage extends WebPage {
 		new BasicInformationForm().uploadProfilepic(browser,formData)
 	}
 
-	def static skillsDisplayed = { browser,formData ->
-		new SkillsForm().skillsDisplayed(browser,formData)
+	def static leftSideDetailsOfEditProfile = { browser,formData ->
+		new BasicInformationForm().leftSideDetailsOfEditProfile(browser,formData)
 	}
 
 	def static deleteExistingSkills = { browser,formData ->
@@ -83,7 +83,6 @@ final class UserEditProfilePage extends WebPage {
 	}
 
 	def static deleteCertificate = { browser,formData ->
-		println "Inside delete Cert:::::::::::::"
 		new CertificateForm().deleteCertificate(browser,formData)
 	}
 
@@ -97,6 +96,8 @@ final class UserEditProfilePage extends WebPage {
 		private static final def MIDDLE_NAME                  = ".//div[@class='basic-info-container ']//input[@id='mname']"
 
 		private static final def LAST_NAME                    = ".//div[@class='basic-info-container ']//input[@id='lname']"
+
+		private static final def AGE                          = ".//div[@class='basic-info-container ']//input[@id='age_new']"
 
 		private static final def GENDER                       = ".//div[@class='basic-info-container ']//select[@id='gender_new']"
 
@@ -132,7 +133,7 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def UPLOAD_PROFILE_IMAGE_LINK    = ".//*[@id='edit_profile']/div[2]/label/span[1]"
 
-		private static final def CHANGE_PROFILE_IMAGE_LINK    = ".//span[contains(text(), 'Change Image')]"
+		private static final def CHANGE_PROFILE_IMAGE_LINK    = ".//span[contains(text(), 'Upload Image')]"
 
 		private static final def UPLOAD_PROFILE_IMAGE_BUTTON  = ".//button[@id='upload_image']"
 
@@ -144,11 +145,11 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def FORM_ERROR                   = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
-		private static final def FIELD_ERROR_1                = ".//span[@class='error_message']"
+		private static final def FIELD_ERROR_1                = ".//div[@class='basic-info-container ']//span[@class='error_message'][@aria-hidden='false']/span[@aria-hidden='false']"//".//div[@class='basic-info-container ']//span[@class='error_message'][@aria-hidden='false']/span"//".//span[@class='error_message']"
 
-		private static final def FIELD_ERROR_2                = ".//span[@class='error_message ng-hide']/span"
-
-		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR]
+		private static final def FIELD_ERROR_2                = ".//div[@class='basic-info-container ']//span[@class='error_message'][@ng-show='validateGender']"
+		
+		private static final def ERROR_MESSAGE_FIELDS = [FIELD_ERROR_1,FIELD_ERROR_2, FORM_ERROR]
 
 		//error message map (Key-Value Pair)
 		def static final BasicInformationErrorMessageMap = [
@@ -182,42 +183,67 @@ final class UserEditProfilePage extends WebPage {
 			if(outcome.isSuccess()){
 				for(int i = 0; i <= FIELDS.size()-1; i++){
 					def tagName = browser.getTagName(FIELDS[i])
-					if(FIELDS[i].equals(CAL_BTN) ){
-						if(formData[i] !=""){
-							//							WebForm.inputData(browser, FIELDS[i], tagName,formData[i])
+
+					if(FIELDS[i].equals(FIRST_NAME)&& formData[i]!="" && formData[i]!=null){
+						KPCommonPage.firstName = formData[i].trim()
+						KPCommonPage.basicInfo.add(formData[i].trim())
+						browser.populateField(FIELDS[i], formData[i])
+					}
+					else if(FIELDS[i].equals(MIDDLE_NAME)&& formData[i]!="" && formData[i]!=null){
+						KPCommonPage.middleName = formData[i].trim()
+						KPCommonPage.basicInfo.add(formData[i].trim())
+						browser.populateField(FIELDS[i], formData[i])
+					}
+					else if(FIELDS[i].equals(LAST_NAME)&& formData[i]!="" && formData[i]!=null){
+						KPCommonPage.lastName = formData[i].trim()
+						KPCommonPage.basicInfo.add(formData[i].trim())
+						browser.populateField(FIELDS[i], formData[i])
+						browser.delay(200)
+					}
+					else if(FIELDS[i].equals(CAL_BTN) ){
+						if(formData[i]!=""){
 							browser.click(CAL_BTN)
+							browser.delay(600)
 							KPCommonPage.datePicker(browser,formData[i])
+							KPCommonPage.basicInfo.add(browser.gettext(AGE,"value").trim())
+							browser.delay(500)
+							KPCommonPage.userAge = formData[i].trim()
 						} else {
 							browser.click FIELDS[i]
 						}
-					} else if(FIELDS[i].equals(CITY) ){
-						browser.scrollToElement(browser.getElement(Browser.XPATH, FIELDS[i]))
+					}
+					else if(FIELDS[i].equals(CITY) ){
+						browser.scrollToElement2(FIELDS[i])
 						browser.delay(2000)
 						if(formData[i] != ""){
 							browser.populateField(FIELDS[i], formData[i])
 							browser.delay(3000)
 							KPCommonPage.selectAutoComplete(browser, CITY_AUTOSELCT, formData[i].trim())
+							KPCommonPage.basicInfo.add(formData[i].trim())
 						} else{
 							browser.populateField(FIELDS[i], formData[i])
 							browser.delay(2000)
 						}
-					} else if(FIELDS[i].equals(EMAIL_ID)){
+					}
+					else if(FIELDS[i].equals(EMAIL_ID)){
 						if(formData[i].contains("@")){
-							KPCommonPage.userName=formData[i]
+							KPCommonPage.userName = formData[i]
 							browser.populateField(FIELDS[i], KPCommonPage.userName)
-							//WebForm.inputData(browser,FIELDS[i],tagname,formData[i])
 						}else{
 							browser.populateField(FIELDS[i],formData[i])
 						}
-					} else if(FIELDS[i].equals(MOBILE_NUM)){
+					}
+					else if(FIELDS[i].equals(MOBILE_NUM)){
+						KPCommonPage.userMobileNo = formData[i]
 						WebForm.inputData(browser, FIELDS[i], tagName,formData[i])
-						if(formData[i]==""){
-							browser.pressTab(MOBILE_NUM)
+						browser.pressTab(MOBILE_NUM)
+					}
+					else if(FIELDS[i].equals(GENDER) || FIELDS[i].equals(MARITAL_STATUS)){
+						WebForm.inputData(browser, FIELDS[i], tagName,formData[i])
+						if(formData[i]!="" && formData[i]!=null){
+							KPCommonPage.basicInfo.add(formData[i].trim())
 						}
 					}else{
-						/*if(FIELDS[i].equals(FIRST_NAME)){
-						 KPCommonPage.f_name=formData[i]
-						 }*/
 						WebForm.inputData(browser, FIELDS[i], tagName,formData[i])
 					}
 				}
@@ -232,7 +258,6 @@ final class UserEditProfilePage extends WebPage {
 		 * @param data  array containing test data
 		 */
 		def final submit(browser, data) {
-
 			def actualValidationMsg = submitForm browser, FIELDS, UPDATE_BUTTON, data, ERROR_MESSAGE_FIELDS
 			def actualValidationMsgKeys = getActualErrorMessageKeys(actualValidationMsg, BasicInformationErrorMessageMap)
 			def outcome = new SuccessOutcome();
@@ -242,14 +267,46 @@ final class UserEditProfilePage extends WebPage {
 
 		//override submitForm
 		def static submitForm = { browser, formFields, submitButton, data, errFields ->
-			browser.scrollToElement(browser.getElement(Browser.XPATH, submitButton))
+			browser.scrollToElement2(submitButton)
 			browser.delay(1000)
-			//browser.scrollToElement(browser.getElement(Browser.XPATH, FIRST_NAME))
 			if(browser.checkEnabled(submitButton)){
 				browser.click submitButton // submit the form.
 				browser.delay(1000)
 			}
+			browser.delay(1000)
+			browser.scrollToElement2(FIRST_NAME)
+			browser.delay(1000)
 			browser.getValidationMessages errFields // get the validation messages from the current page.
+
+		}
+
+
+		def static leftSideDetailsOfEditProfile = { browser,formData ->
+			KPCommonPage.dataList.clear()
+			KPCommonPage.actualDataList.clear()
+			def xpathName = ".//*[@id='edit_profile']/h3"
+			def xpathEmail = "//h5[i[contains(@ng-show,'emailId')]]"
+			def xpathmobNum = ".//h5[@ng-show='userProfile.cloudUserJson.mobileNo']"
+			def xpathDOB = ".//h5[@ng-show='userDOB']"
+			def fName = browser.gettext(FIRST_NAME,"value")
+			def mName = browser.gettext(MIDDLE_NAME,"value")
+			def lName = browser.gettext(LAST_NAME,"value")
+
+			KPCommonPage.dataList.add(KPCommonPage.getFullName(fName,mName,lName).trim())
+			KPCommonPage.dataList.add(browser.gettext(EMAIL_ID,"value"))
+			KPCommonPage.dataList.add(browser.gettext(MOBILE_NUM,"value"))
+			KPCommonPage.dataList.add(browser.gettext(".//*[@id='dobdatepicker']","value"))
+
+			KPCommonPage.actualDataList.add(browser.gettext(xpathName).trim())
+			KPCommonPage.actualDataList.add(browser.gettext(xpathEmail).split("\n")[0].trim())
+			KPCommonPage.actualDataList.add(browser.gettext(xpathmobNum).trim())
+			KPCommonPage.actualDataList.add(browser.gettext(xpathDOB).trim())
+
+			if(KPCommonPage.dataList.size()==KPCommonPage.actualDataList.size() && KPCommonPage.dataList.containsAll(KPCommonPage.actualDataList)){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "leftSideDetailsMismatchIssue", "The details on the left side do not match on Edit Profile")
+			}
 		}
 
 		def static uploadProfilepic = { browser,formData ->
@@ -437,8 +494,7 @@ final class UserEditProfilePage extends WebPage {
 				browser.click submitButton // submit the form.
 				browser.delay(1000)
 			}
-			println "Going to get validation messages and error fields are " +  errFields
-			browser.getValidationMessages errFields // get the validation messages from the current page.
+			browser.getValidationMessages errFields
 		}
 	}
 
@@ -447,9 +503,9 @@ final class UserEditProfilePage extends WebPage {
 
 		//Work Experience form elements
 
-		private static def INDUSTRY     		                 = ".//div[@class='work-exp-container']//md-autocomplete-wrap/input[@placeholder='Select Industry'][@aria-invalid='true']"
+		private static def INDUSTRY     		                 = "//div[@class='work-exp-container']//input[@class='ng-pristine ng-untouched ng-scope ng-valid ng-valid-required'][@aria-invalid='false']"//"//div[@class='work-exp-container']//input[@class='ng-pristine ng-untouched ng-scope ng-valid ng-valid-required']"//".//div[@class='work-exp-container']//md-autocomplete-wrap/input[@placeholder='Select Industry'][@aria-invalid='true']" //.//div[@class='work-exp-container']//input[@class='ng-pristine ng-untouched ng-scope ng-valid ng-valid-required']
 
-		private static def INDUSTRY1							 = ".//div[@class='work-exp-container']//md-autocomplete-wrap/input[@placeholder='Select Industry'][@aria-invalid='false']"
+		private static def INDUSTRY1							 = ".//div[@class='work-exp-container']//input[@name='industry0']"//".//div[@class='work-exp-container']//input[@class='ng-scope ng-valid ng-valid-required ng-dirty ng-valid-parse ng-touched']"
 
 		private static final def CREATENEW_INDUSTRY_LINK         = ".//a[@ng-click='addIndustry(searchText)']"
 
@@ -495,37 +551,42 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def FIELDS1                         = [INDUSTRY1, JOB_ROLE1, COMPANY_NAME1, TIMEPERIOD_STARTMONTH1, TIMEPERIOD_STARTYEAR1, TIMEPERIOD_ENDMONTH1, TIMEPERIOD_ENDYEAR1, CURRENTLY_WORKING_HERE]
 
-		private static final def FIELDSAFTERUNCHECK              = [TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR]
+		private static final def FIELDS_AFTER_UNCHECK            = [TIMEPERIOD_ENDMONTH, TIMEPERIOD_ENDYEAR]
 
 		public static def FIELDS_TO_ENTER						 = FIELDS
 		// the error fields.
+
+		public static def SUCCESS_MESSAGE 						 = ".//*[@id='main_page']/div[1]/div/span"
+
 		private static final def FORM_ERROR                      = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
-		private static final def FIELD_ERROR                     = "//div[@class='work-exp-container']//span[@class='error_message']/span[@aria-hidden='false']"
+		private static final def FIELD_ERROR                     = ".//div[@class='work-exp-container']//span[@class='error_message']/span[@aria-hidden='false']"
 
-		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR, FIELD_ERROR]
+		private static final def ERROR_MESSAGE_FIELDS            = [FORM_ERROR, FIELD_ERROR]
 
 		//error message map (Key-Value Pair)
 		def static final workExperienceErrorMessageMap = [
-			industry_req                :  'Select Industry.',
-			job_role_req		        :  'Job Role is required ',
-			org_name_req  			    :  'Organization Name is required. ',
-			start_month_req 			:  'Month is required',
-			start_year_req  			:  'Year is required',
-			end_month_req 			    :  'Month is required ',
-			end_year_req    		    :  'Year is required',
-			start_end_time_same			: 'Start Time Period cannot be same as End Time Period',
-			start_time_greater_end_time : 'Start Time Period cannot be greater than End Time Period',
-			update_success 				: 'User data updated successfully']
+			industry_req                  :  'Select Industry.',
+			job_role_req		          :  'Job Role is required ',
+			org_name_req  			      :  'Organization Name is required. ',
+			start_month_req 			  :  'Start month is required',
+			start_year_req  			  :  'Start year is required',
+			end_month_req 			      :  'End month is required ',
+			end_year_req    		      :  'End year is required',
+			start_end_time_same			  :  'Start Time Period cannot be same as End Time Period',
+			start_time_greater_end_time   :  'Start Time Period cannot be greater than End Time Period',
+			update_success 				  :  'User data updated successfully',
+			workExperienceRemoved_Success :  'User Experience removed successfully.']
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
 			def outcome = WebForm.checkFormFieldsData(formData, FIELDS_TO_ENTER)
 			if(outcome.isSuccess()){
 				for(int j = 0; j < FIELDS_TO_ENTER.size(); j++){
+					def ele = browser.isDisplayed(FIELDS_TO_ENTER[j])
 					browser.delay(2000)
 					def tagName = browser.getTagName(FIELDS_TO_ENTER[j])
-					if(FIELDS_TO_ENTER[j].equals(INDUSTRY)){
+					if(FIELDS_TO_ENTER[j].equals(INDUSTRY) ||FIELDS_TO_ENTER[j].equals(INDUSTRY1)){
 						browser.scrollToElement(browser.getElement(Browser.XPATH, FIELDS_TO_ENTER[j]))
 						browser.delay(500)
 						if(formData[j] != ""){
@@ -545,7 +606,7 @@ final class UserEditProfilePage extends WebPage {
 
 						if(formData[j].equals("1")){
 							WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
-							KPCommonPage.WorkExperienceDetails.add("Till Date .")
+							KPCommonPage.WorkExperienceDetails.add("Till Date")
 						}else if(formData[j].equals("0")){
 							WebForm.inputData(browser,FIELDS_TO_ENTER[j],tagName,formData[j])
 							browser.delay(2000)
@@ -601,7 +662,8 @@ final class UserEditProfilePage extends WebPage {
 		}
 
 		def static deleteWorkExperience = { browser, formData ->
-			def attributeValue = []
+			def actMessage
+			def result
 			def jobRoleElements = browser.getLists(JOB_ROLE1,"value")
 			def deleteWorkExpList = browser.getListElements(DELETE_WORK_EXPERIENCE)
 			for(int i=0;i<jobRoleElements.size();i++){
@@ -611,7 +673,19 @@ final class UserEditProfilePage extends WebPage {
 					browser.delay(2000)
 					browser.click(DELETE_OPTION_YES)
 					browser.delay(4000)
+					actMessage = browser.gettext(SUCCESS_MESSAGE)
+					if(browser.isDisplayed(SUCCESS_MESSAGE) && actMessage.equalsIgnoreCase(workExperienceErrorMessageMap.get('workExperienceRemoved_Success'))){
+						result = true
+					}else{
+						return KPCommonPage.returnFailureOutcome(browser, "workExperienceDeleteSuccessMessageIssue", "The delete success message was not displayed or the success message do not match")
+					}
 				}
+			}
+
+			if(result){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "workExperienceDeleteIssue", "Work Experience to delete was not displayed")
 			}
 		}
 
@@ -641,9 +715,9 @@ final class UserEditProfilePage extends WebPage {
 
 		private static final def SKILLS_REMOVE_BUTTON      = ".//*[@id='edit_profile_container']/div[1]/div[2]/div/div/div/div[1]/div/div/form/div[4]/div/div/div/div/div/multiple-autocomplete/div/ul/li/span/span/i"
 
-		private static final def SKILLS_ON_VIEW_PROFILE    = ".//li[@class='tagSkills prfleDetails capitalize ng-binding']"
-
 		private static final def SCROLL_TO_VIEW_SKILLS     = ".//ul[@class='footer-secondary-list']/li/h4[@class='heading']"
+
+		private static final def SKILLS_ON_VIEW_PROFILE    = ".//li[@class='tagSkills prfleDetails capitalize ng-binding']"
 
 		private static final def FIELDS = [SKILLS]
 
@@ -661,10 +735,11 @@ final class UserEditProfilePage extends WebPage {
 			if(outcome.isSuccess()){
 				for(int i = 0; i < FIELDS.size(); i++){
 					def tagName = browser.getTagName(FIELDS[i])
+					KPCommonPage.skills.clear()
 					if(formData[i].contains(",")){
 						def splittedValue = formData[i].split(",")
 						for(int j=0;j<splittedValue.size();j++){
-							WebForm.inputData(browser,FIELDS[i],tagName,splittedValue[j].trim())
+							WebForm.inputData(browser,FIELDS[i],tagName,splittedValue[j])
 							if(browser.isDisplayed(SKILLS_AUTOSUGGEST)){
 								browser.delay(500)
 								browser.click(SKILLS_AUTOSUGGEST)
@@ -672,7 +747,7 @@ final class UserEditProfilePage extends WebPage {
 								browser.delay(500)
 								browser.click(SKILLS_ADD_NEW)
 							}
-							KPCommonPage.skills.add(splittedValue[j])
+							KPCommonPage.skills.add(splittedValue[j].trim())
 						}
 					}else{
 						WebForm.inputData(browser,FIELDS[i],tagName,formData[i])
@@ -710,27 +785,7 @@ final class UserEditProfilePage extends WebPage {
 			browser.getValidationMessages errFields // get the validation messages from the current page.
 		}
 
-		def static skillsDisplayed = { browser, formData ->
-			def formDataSkills = []
-			browser.delay(1000)
-			browser.scrollToElement2(SCROLL_TO_VIEW_SKILLS)
-			def skillsOnViewProfile = browser.getLists(SKILLS_ON_VIEW_PROFILE)
-			def commonSkills = KPCommonPage.skills
-			for(int k=0;k<commonSkills.size();k++){
-				formDataSkills.add(commonSkills[k].trim())
-			}
-			skillsOnViewProfile = skillsOnViewProfile.sort()
-			formDataSkills = formDataSkills.sort()
-			for(int l=0;l<skillsOnViewProfile.size();l++)
-				if(skillsOnViewProfile[l].equalsIgnoreCase(formDataSkills[l])){
-					println "SUCCESS---> 1"
-					return new SuccessOutcome()
-				}else {
-					println "FAILURE----> 1"
-					return KPCommonPage.returnFailureOutcome(browser, "SkillsMismatchIssue", "Skills on View profile page do not match")
-				}
 
-		}
 
 		def static removeASkill = { browser, formData ->
 			def result = false
@@ -788,12 +843,25 @@ final class UserEditProfilePage extends WebPage {
 		}
 
 		def static deleteExistingSkills = { browser, formData ->
-			if(browser.isDisplayed(SKILLS_TEXT)){
-				def skillsCountOnPage = browser.getListElements(SKILLS_REMOVE_BUTTON)
-				for(int j=0;j<skillsCountOnPage.size();j++){
-					browser.clickElement(skillsCountOnPage[j])
-					browser.delay(1000)
+			browser.delay(1000)
+			def result = false
+			try{
+				if(browser.isDisplayed(SKILLS_TEXT)){
+					def skillsCountOnPage = browser.getListElements(SKILLS_REMOVE_BUTTON)
+					for(int j=0;j<skillsCountOnPage.size();j++){
+						browser.clickElement(skillsCountOnPage[j])
+						browser.delay(1000)
+						result = true
+					}
 				}
+			}catch(Exception e){
+				println "The exception is-----> "+e
+			}
+
+			if(result){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "SkillDisplayIssue", "No skill displayed to delete")
 			}
 		}
 
@@ -805,10 +873,8 @@ final class UserEditProfilePage extends WebPage {
 				formDataSkillss.add(skillsOnEditPage[k].trim())
 			}
 			if(skillsOnEditPage.containsAll(formDataSkillss)){
-				println "SUCCESS---> 2"
 				return new SuccessOutcome()
 			}else {
-				println "FAILURE----> 2"
 				return KPCommonPage.returnFailureOutcome(browser, "SkillsMismatchIssue", "Skills on View profile page do not match")
 			}
 		}
@@ -816,9 +882,7 @@ final class UserEditProfilePage extends WebPage {
 
 	static final class CertificateForm extends WebForm {
 
-		//Certificates form elements                                                               
-
-		private static final def CHOOSE_FILE_BUTTON     	= ".//div[@class='mb_10 ng-binding']/label[@class='button-pri'][@aria-hidden='false']"
+		private static def CHOOSE_FILE_BUTTON           	= ".//label[@class='button-pri'][@for='uploadFilenum']"//.//div[@class='mb_10 ng-binding']/label[@class='button-pri'][@aria-hidden='false']
 
 		private static final def CERTIFICATE_NAME      		= ".//div[@class='certificates-container']//input[@class='ng-pristine ng-untouched ng-scope ng-invalid ng-invalid-required']"//".//*[@class='certificates-container']/descendant::md-autocomplete-wrap/input"
 
@@ -835,14 +899,16 @@ final class UserEditProfilePage extends WebPage {
 		private static final def FORM_ERROR                 = ".//div[@class='success-message alert ng-isolate-scope alert-success alert-dismissible']//div[@ng-transclude='']/span"
 
 		private static final def FIELD_ERROR                = "//div[@class='work-exp-container']//span[@class='error_message']/span"
-		
+
 		private static final def DELETE_OPTION_YES          =  ".//button[@ng-click='dialog.hide()']/span[@class='ng-binding ng-scope']"
-		
+
 		private static final def DELETE_OPTION_NO 			= ".//button[@class='md-primary md-cancel-button md-button ng-scope md-default-theme md-ink-ripple']"
-		
+
 		private static final def UPDATE_BUTTON              = ".//*[@id='edit_profile_container']//form//div[@class='col-md-3']//button[@class='ptb_6 btn button-primary']"
 
-		private static final def FIELDS 			        = [CHOOSE_FILE_BUTTON, CERTIFICATE_NAME]
+		private static final def DATA                       = ""
+
+		private static final def FIELDS 			        = [DATA, CHOOSE_FILE_BUTTON, CERTIFICATE_NAME]
 
 		private static final def FIELDS1					= [CERTIFICATE_NAME1]
 
@@ -867,17 +933,17 @@ final class UserEditProfilePage extends WebPage {
 			if(outcome.isSuccess()){
 				for(int i = 0; i < FIELDS_TO_ENTER1.size(); i++){
 					def tagName = browser.getTagName(FIELDS_TO_ENTER1[i])
-					println "tagname for ::::::::::::::: "+i+":::::::::::: "+tagName
+
 
 					if(FIELDS_TO_ENTER1[i].equalsIgnoreCase(CHOOSE_FILE_BUTTON)){
 						if(formData[i]!=null && !formData[i].equals("")){
-							browser.click(CHOOSE_FILE_BUTTON)
+							def newXpath = CHOOSE_FILE_BUTTON.replace("num",formData[0])
+							browser.click(newXpath)
 							browser.uploadFile(formData[i])
 							browser.delay(500)
 						}
-					}else{
-					browser.delay(2000)
-					println "IS DISPLAYED:::::::::::::: "+browser.isDisplayed(CERTIFICATE_NAME)
+					}else if(FIELDS_TO_ENTER1[i].equalsIgnoreCase(CERTIFICATE_NAME) || FIELDS_TO_ENTER1[i].equalsIgnoreCase(CERTIFICATE_NAME1)){
+						browser.delay(3000)
 						WebForm.inputData(browser,FIELDS_TO_ENTER1[i],tagName,formData[i])
 						if(browser.isDisplayed(CREATENEW_CERTIFICATE_LINK)){
 							browser.click(CREATENEW_CERTIFICATE_LINK)
@@ -889,6 +955,8 @@ final class UserEditProfilePage extends WebPage {
 							KPCommonPage.selectAutoComplete(browser, CERTIFICATE_AUTOCOMPLETE, formData[i].trim())
 							KPCommonPage.docName.add(formData[i].trim())
 						}
+					}else{
+						println "Comes here"
 					}
 				}
 			}
@@ -932,13 +1000,14 @@ final class UserEditProfilePage extends WebPage {
 					browser.clickElement(certificateDeletelink[i])
 					browser.delay(2000)
 					browser.click(DELETE_OPTION_YES)
-					browser.delay(4000)
+					browser.delay(1000)
+					def deleteDocMessage = browser.gettext(".//*[@id='main_page']/div[1]/div/span")
 					def actualUploadMsg = certificateErrorMessageMap.get('docRemoveSuccess')
-					def deleteDocMessage = browser.gettext(FORM_ERROR)
 					if(actualUploadMsg.equalsIgnoreCase(deleteDocMessage)){
-						new SuccessOutcome()
+						browser.delay(5000)
+						return new SuccessOutcome()
 					}else{
-					return KPCommonPage.returnFailureOutcome(browser, "CertificateDeleteMessageMismatchIssue", "Delete certificate messgae do not match")
+						return KPCommonPage.returnFailureOutcome(browser, "CertificateDeleteMessageMismatchIssue", "Delete certificate messgae do not match")
 					}
 				}else{
 					return KPCommonPage.returnFailureOutcome(browser, "NoCertificateToDelete", "Certificate to delete was not found")

@@ -8,12 +8,29 @@ import com.KPPhaseTwo.tools.Browser
 import com.KPPhaseTwo.app.pages.KPCommonPage
 
 /**
- * Created by Aditya on 14/11/2017
+ * Created by Aditya on 01/12/2017
  */
 
 final class ViewUserPublicProfilePage extends WebPage {
 
 	//To verify image displayed in View Profile page
+
+	def static profilePercentagecompletion = { browser, formData ->
+		new ViewUserPublicProfilePageForm().profilePercentagecompletion browser, formData
+	}
+
+	def static leftSideDetailsOfViewProfile = { browser, formData ->
+		new ViewUserPublicProfilePageForm().leftSideDetailsOfViewProfile browser, formData
+	}
+
+	def static userBasicInformationMatch = { browser, formData ->
+		new ViewUserPublicProfilePageForm().userBasicInformationMatch(browser,formData)
+	}
+
+	def static correctNameAfterEdit = { browser, formData ->
+		new ViewUserPublicProfilePageForm().correctNameAfterEdit(browser,formData)
+	}
+
 	def static uploadUserImgDisplay = { browser, formData ->
 		new ViewUserPublicProfilePageForm().uploadUserImgDisplay(browser,  formData)
 	}
@@ -27,17 +44,37 @@ final class ViewUserPublicProfilePage extends WebPage {
 	}
 
 	def static ifWorkExperienceDisplayed = { browser, formData ->
-		println "Inside User Manager::::::::::::::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 		new ViewUserPublicProfilePageForm().ifWorkExperienceDisplayed browser,  formData
 	}
-	
-	
+
+	def static skillsDisplayed = { browser,formData ->
+		new ViewUserPublicProfilePageForm().skillsDisplayed(browser,formData)
+	}
+
 	def static certificateMatch = { browser,formData ->
 		new ViewUserPublicProfilePageForm().certificateMatch(browser,formData)
 	}
 
+	def static ifcertificateDeleted = { browser,formData ->
+		new ViewUserPublicProfilePageForm().ifcertificateDeleted(browser,formData)
+	}
+
 
 	static final class ViewUserPublicProfilePageForm extends WebForm {
+
+		private static final def NAME_ON_EDIT_PROFILE    = ".//*[@id='edit_profile']/h3"
+
+		private static final def NAME_ON_VIEW_PROFILE    = ".//div[@class='col-md-4']/h3"
+
+		private static final def EMAIL_ON_EDIT_PROFILE   = "//h5[i[contains(@ng-show,'emailId')]]"
+
+		private static final def BASIC_INFO_OF_USER      = ".//div[@class='row']/div[2]/span"
+
+		private static final def LEFT_BASIC_INFO_OF_USER = ".//div[@class='col-md-4']/h5"
+
+		private static final def EMAIL_ON_VIEW_PROFILE   = ".//h5 [@class='p_5 text-center profile-text word-wr ng-binding']"
+
+		private static final def VIEW_PROFILE_LINK       = ".//div[@class='user-profile-container']//button[@ng-click='viewUserProfile()']"
 
 		private static final def IMAGE_SOURCE            = ".//img[@class='profile-pic']"
 
@@ -46,10 +83,93 @@ final class ViewUserPublicProfilePage extends WebPage {
 		private static final def WORKEXPERIENCE_DETAILS  = ".//div[@ng-repeat='userProfiles in userProfile.kpUserExperienceJSON ']//p"
 
 		private static final def DOCNAME_VIEWPROFILE     = ".//label[@name='docName']"
-		
-		private static final def SCROLL_TO_VIEW_DOC      = ".//ul[@class='footer-secondary-list']/li/h4[@class='heading']"
-		
-		
+
+		private static final def SCROLL_TO_VIEW_DOC      = ".//div[@class='col-md-12 col-xs-12']/h4"
+
+		private static final def SCROLL_TO_ELEMENT       = ".//h4[@class='heading']"
+
+		private static final def SCROLL_TO_VIEW_SKILLS   = ".//h4[@class='eduHdr word-wr']"
+
+		private static final def SKILLS_ON_VIEW_PROFILE  = ".//li[@class='tagSkills prfleDetails capitalize word-wr ng-binding']"
+
+		private static final def PERCENTAGE = ".//h4[@id='profile_percent']"
+
+		private static final	def LEFTSIDE_NAME = ".//h3[@class='profile-name text-center profile-text']"
+
+		private static final	def LEFTSIDE_EMAIL = ".//h5[@class='p_5 text-center profile-text word-wr ng-binding']"
+
+		private static final def LEFTSIDE_MOBNUM = ".//h5[@class='p_5 text-center profile-text ng-binding']"
+
+		private static final def LEFTSIDE_DOB = ".//h5[@ng-if='userProfile.cloudUserJson.dob']"
+
+
+		def static profilePercentagecompletion = { browser,formData ->
+			def percentageOnDashboard = browser.gettext(PERCENTAGE)
+			if(percentageOnDashboard.trim().equals(formData[0].trim())){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "percentageCompletionIssue", "The profile percentage completion does not match")
+			}
+		}
+
+
+		def static leftSideDetailsOfViewProfile = { browser,formData ->
+			browser.delay(2000)
+			def actualList = []
+			def expectedList = KPCommonPage.actualDataList
+			actualList.add(browser.gettext(LEFTSIDE_NAME).trim())
+			actualList.add(browser.gettext(LEFTSIDE_EMAIL).trim())
+			actualList.add(browser.gettext(LEFTSIDE_MOBNUM).trim())
+			actualList.add(browser.gettext(LEFTSIDE_DOB).trim())
+			if(actualList.size()==expectedList.size() && actualList.containsAll(expectedList)){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "leftSideDetailsMismatchIssue", "The details on the left side do not match on View Profile")
+			}
+
+		}
+
+		def static userBasicInformationMatch = { browser,formData ->
+			def list = []
+			def actualBasicInfo = new ViewUserPublicProfilePageForm().getActualBasicInfoDetails(browser)
+			actualBasicInfo = actualBasicInfo.sort()
+			def expectedBasicInfo = KPCommonPage.basicInfo.sort()
+			if(actualBasicInfo.size()==expectedBasicInfo.size() && actualBasicInfo.containsAll(expectedBasicInfo)){
+				def infoList = browser.getLists(LEFT_BASIC_INFO_OF_USER)
+				infoList = infoList.sort()
+				list.add(KPCommonPage.userAge.trim())
+				list.add(KPCommonPage.userMobileNo.trim())
+				list.add(KPCommonPage.userName.trim())
+				list = list.sort()
+				if(infoList.size()==list.size() && infoList.containsAll(list)){
+					return new SuccessOutcome()
+				}else{
+					return KPCommonPage.returnFailureOutcome(browser, "emailIdDisplayIssue", "The basic information of the user on left side do not match")
+				}
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "BasicInfoMissmatchIssue", "The basic information of the user do not match OR size of actual and expected info do not match")
+			}
+		}
+
+		def getActualBasicInfoDetails(def browser){
+			def basicDetails = []
+			def basicDetailsList = browser.getLists(BASIC_INFO_OF_USER)
+			for(int i=0;i<basicDetailsList.size();i++){
+				if(basicDetailsList[i].contains("|")){
+					def splittedValue = basicDetailsList[i].split("\\|")
+					basicDetails.add(splittedValue[0].trim())
+				}else if(basicDetailsList[i].contains(" ")){
+					def tempVar = basicDetailsList[i].split(" ")
+					for(int j=0;j<tempVar.size();j++){
+						basicDetails.add(tempVar[j].trim())
+					}
+				}else{
+					basicDetails.add(basicDetailsList[i].trim())
+				}
+			}
+			return basicDetails
+		}
+
 		//Verify image displayed in View Organization Profile page
 		def static final uploadUserImgDisplay = { browser, formData ->
 			def srcImagePath = []
@@ -70,7 +190,7 @@ final class ViewUserPublicProfilePage extends WebPage {
 			def sortedFormData = []
 			def sortededuDetailList = []
 			def splittedValue
-			browser.scrollToElement(browser.getElement(Browser.XPATH, ".//a[@href='#/dashboard']"))
+			browser.scrollToElement2(".//h5[@class='p_5 text-center profile-text ng-binding']")
 			browser.delay(1500)
 			def userEduDetails= browser.getLists(EDU_DETAILS)
 			browser.delay(2000)
@@ -96,7 +216,6 @@ final class ViewUserPublicProfilePage extends WebPage {
 					}
 				}
 				if(result){
-					println "matched"
 					return new SuccessOutcome()
 				}else{
 					return KPCommonPage.returnFailureOutcome(browser, "EducationDetailsMismatchIssue", "Education details on View profile page do not matchwith the data provided")
@@ -107,99 +226,141 @@ final class ViewUserPublicProfilePage extends WebPage {
 		}
 
 		def static final workExperienceDetailsMatch = { browser, formData ->
-			println "Inside WORKEXPERIENCE"
+			def result = false
 			def expectedWorkExprience = []
 			def actualWorkExprience = []
-			println "0"
+			browser.delay(1000)
+			browser.scrollToElement2(".//i[@class='kp-experience blue mr_5']")
+			browser.delay(2000)
 			if(browser.isDisplayed(WORKEXPERIENCE_DETAILS)){
+				browser.delay(2000)
 				def workExperienceOnViewProfile = browser.getLists(WORKEXPERIENCE_DETAILS)
-				println "workExperienceOnViewProfile------->"+workExperienceOnViewProfile
 				def workExperienceOnViewProfileList = []
 				def splittedValue
 				for(int i=0;i<workExperienceOnViewProfile.size();i++){
-					println "1"
 					if(workExperienceOnViewProfile[i] != null && workExperienceOnViewProfile[i].size() > 0 && workExperienceOnViewProfile[i].charAt(workExperienceOnViewProfile[i].size()-1)=='.'){
-						println "2"
 						workExperienceOnViewProfile[i] = workExperienceOnViewProfile[i].substring(0, workExperienceOnViewProfile[i].size()-1).trim()
-						println "3"
 					}
-					println "4"
 					workExperienceOnViewProfile[i] = workExperienceOnViewProfile[i].trim();
-					println "5"
 					if((workExperienceOnViewProfile[i]).contains("-")){
-						println "6"
 						splittedValue = workExperienceOnViewProfile[i].split("-")
-						println "splittedValue:::::::::::::::::::::------> "+splittedValue
-						println "7"
-						println "splittedValue:::::::::::::::::::::------> "+splittedValue.size()
 						for(int j=0;j<splittedValue.size();j++){
-							println "34343"
 							if(splittedValue[j].matches(".*\\d+.*")){
-								println "HAS DIGITS"
-								println "splittedValue[j]::::::::: "+splittedValue[j]
 								def value = splittedValue[j].split(" ")
-								println "value.size()::::::::::: "+value.size()
 								for(int k=0;k<value.size();k++){
-									println "VALUE OF K is "+k+" and"+" value[k] is "+value[k]
 									if(value[k]!=""){
 										workExperienceOnViewProfileList.add(value[k].trim())
 									}
 								}
 							}else {
-								println "DOES NOT HAVE DIGIT"
 								workExperienceOnViewProfileList.add(splittedValue[j].trim())
 							}
 						}
 					}else{
-						println "10"
 						workExperienceOnViewProfileList.add(workExperienceOnViewProfile[i].trim())
-						println "11"
 					}
 				}
-				println "workExperienceOnViewProfileList :::::------> "+workExperienceOnViewProfileList
-				println "KPCommonPage.WorkExperienceDetails.size() :: "+KPCommonPage.WorkExperienceDetails
-				println "KPCommonPage.WorkExperienceDetails.size() :: "+KPCommonPage.WorkExperienceDetails.size()
-				println "workExperienceOnViewProfileList.size()    :: "+workExperienceOnViewProfileList.size()
 				if(KPCommonPage.WorkExperienceDetails.size()== workExperienceOnViewProfileList.size()){
-					println "12"
 					expectedWorkExprience = KPCommonPage.WorkExperienceDetails.sort()
-					println "13"
 					actualWorkExprience = workExperienceOnViewProfileList.sort()
-					println "14"
 					for(int k=0;k<actualWorkExprience.size();k++){
-						println "15"
 						if(expectedWorkExprience[k].equalsIgnoreCase(actualWorkExprience[k])){
-							println "16"
-							println "The Work Experience matched"
+							result = true
 						}
 					}
 				}
 			}else {
-				println "The Work Experience details were not added"
+				return KPCommonPage.returnFailureOutcome(browser, "WorkExperienceDisplayIssue", "The work experience was not displayed on the View Profile page")
+			}
+
+			if(result){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "WorkExperienceDetailsMismatchIssue", "The actual work experience details do not match with expected details")
 			}
 		}
 
 		def static final ifWorkExperienceDisplayed = { browser, formData ->
-			println "HELLLLLLLLLOOOOOOOOOOOOOOOOO"
-			println "browser.isDisplayed(WORKEXPERIENCE_DETAILS):::::::: "+browser.isDisplayed(WORKEXPERIENCE_DETAILS)
-			if(browser.isDisplayed(WORKEXPERIENCE_DETAILS) == null){
-				println"UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+			browser.delay(1500)
+			def result = browser.isDisplayed(WORKEXPERIENCE_DETAILS)
+			if(result == null){
 				return new SuccessOutcome()
 			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "WorkExperienceDeleteIssue", "The work experience details were displayed even when work experiene was deleted")
+			}
+		}
 
+		def static skillsDisplayed = { browser, formData ->
+			def result = false
+			def formDataSkills = []
+			browser.delay(2000)
+			browser.scrollToElement2(SCROLL_TO_VIEW_SKILLS)
+			browser.delay(1000)
+			if(browser.isDisplayed(SKILLS_ON_VIEW_PROFILE)){
+				def skillsOnViewProfile = browser.getLists(SKILLS_ON_VIEW_PROFILE)
+				def commonSkills = KPCommonPage.skills
+				for(int k=0;k<commonSkills.size();k++){
+					formDataSkills.add(commonSkills[k].trim())
+				}
+
+				skillsOnViewProfile = skillsOnViewProfile.sort()
+				formDataSkills = formDataSkills.sort()
+				if(skillsOnViewProfile.size()==formDataSkills.size() && skillsOnViewProfile.containsAll(formDataSkills)){
+					result = true
+				}else{
+					result = false
+				}
+				/*for(int l=0;l<skillsOnViewProfile.size();l++){
+				 if(skillsOnViewProfile[l].trim().equalsIgnoreCase(formDataSkills[l].trim())){
+				 result = true
+				 }else{
+				 result = false
+				 break
+				 }
+				 }*/
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "SkillsDisplayIssue", "Skills on View profile are not displayed")
+			}
+			if(result){
+				return new SuccessOutcome()
+			}else {
+				return KPCommonPage.returnFailureOutcome(browser, "SkillsMismatchIssue", "Skills on View profile page do not match")
 			}
 		}
 
 		def static certificateMatch = { browser,formData ->
+			browser.delay(2000)
+			def result = false
 			browser.scrollToElement2(SCROLL_TO_VIEW_DOC)
-			browser.delay(200)
-			def docName = browser.getLists(DOCNAME_VIEWPROFILE)
-			for(int i=0;i<docName.size();i++){
-				if(docName[i].equalsIgnoreCase(KPCommonPage.docName[i])){
-					return new SuccessOutcome()
-				}else{
-					return KPCommonPage.returnFailureOutcome(browser, "DocumentNameMismatchIssue", "The document name does not match on View Public profile page")
+			browser.delay(1000)
+			def docNameList = browser.getLists(DOCNAME_VIEWPROFILE)
+			def sortedDocName = docNameList.sort()
+			def expectedDocName = KPCommonPage.docName.sort()
+			if(browser.isDisplayed(DOCNAME_VIEWPROFILE)){
+				for(int i=0;i<docNameList.size();i++){
+					if(sortedDocName[i].equalsIgnoreCase(expectedDocName[i])){
+						result = true
+					}
 				}
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "DocumentNameDisplayIssue", "The document name on view profile page was not displayed")
+			}
+			if(result){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "DocumentNameMismatchIssue", "The document name does not match on View Public profile page")
+			}
+		}
+
+		def static ifcertificateDeleted = { browser,formData ->
+			browser.delay(2000)
+			browser.scrollToElement2(SCROLL_TO_VIEW_DOC)
+			browser.delay(1000)
+			def outcome = browser.isDisplayed(DOCNAME_VIEWPROFILE)
+			if(outcome==null){
+				return new SuccessOutcome()
+			}else{
+				return KPCommonPage.returnFailureOutcome(browser, "DocumentNameMismatchIssue", "The document was not deleted")
 			}
 		}
 

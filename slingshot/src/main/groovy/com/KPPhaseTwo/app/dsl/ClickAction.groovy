@@ -29,6 +29,7 @@ class ClickAction {
 		xPathMapping.put("individualRegister", ".//*[@class='kp-individual kp-large-two-tone-icons']/span[@class='path3']")
 		xPathMapping.put("resgisterFromHome", ".//button[contains(@class, 'margin-auto display-block btn btn-primary btn-xlarge get-started-btn') and text() = 'REGISTER']")
 		xPathMapping.put("podWorksLogo", "//a[@href='#/home']/img");
+		xPathMapping.put("hire", "//a[@ui-sref='.jobDashboard']");
 
 		//Organization Dashboard
 		xPathMapping.put("editOrgOnDashboard", "//a[@class='profile-edit-link display-block ng-scope']/h5");
@@ -83,8 +84,9 @@ class ClickAction {
 
 		//Post Job
 		xPathMapping.put("postJob", "//a[text()='Post Job']")
-		xPathMapping.put("viewAllPostings", ".//a[@href='#/jobs/postlist']");
-		xPathMapping.put("postJobBreadcrumb",".//*[@id='breadcrumbox']/ol/li[1]");
+		xPathMapping.put("viewAllPostings", ".//a[@href='/jobs/postlist']");
+		xPathMapping.put("postJobBreadcrumb",".//*[@id='breadcrumbox']/ol/li[2]/a");
+		xPathMapping.put("fiftyResults",".//label[@for='item5']");
 
 		//User Edit Profile
 		xPathMapping.put("userEditProfile",".//div[@class='pos-a full-width full-height']/a");
@@ -113,8 +115,8 @@ class ClickAction {
 		//Followed Organizations List Page
 		xPathMapping.put("followedOrganization","//a[text()='Followed Organization List']");
 		xPathMapping.put("search", "//input[@value='SEARCH']");
-		xPathMapping.put("primarySearch","//label[text()='Search']/following-sibling :: button");
-		xPathMapping.put("firstOrganization","//a[@class='content-name job-title pointer title-name blue ng-binding']");
+		xPathMapping.put("primarySearch",".//button[@ng-click='search(searchValue)']");
+		xPathMapping.put("firstOrganization",".//*[@id='main_page']/div[2]/div[2]/div/div/div/div[1]/div[3]/div[4]/div/div[2]/div[1]/h3/a");
 		xPathMapping.put("bredcrumBack", ".//*[@id='breadcrumbox']/ol/li[2]/a")
 
 		//Manage Users
@@ -128,7 +130,23 @@ class ClickAction {
 		//Pod Customization
 		xPathMapping.put("podCustomization","//a[text()='Pods Customization']")
 		xPathMapping.put("podsCustomizationBack", ".//*[@id='breadcrumbox']/ol/li[1]")
-
+		
+		//Organization Dashboard
+		xPathMapping.put("viewAllOngoing","//a[@ui-sref='kp.ongoingPodOrg']");
+		xPathMapping.put("searchPodArrow", "//i[@class='fa fa-arrow-right blue']");
+		xPathMapping.put("firstPod", ".//div[@class='ng-scope']/div[1]/div[1]/div/div/h3/a");
+		
+		//Participant List 
+		xPathMapping.put("addParticipant", ".//*[@id='overview']//button[contains(text(), 'Add Participant')]");
+		xPathMapping.put("inviteLearner", ".//*[@id='main_page']//button[@ng-click='inviteUserToCourse()']");
+		xPathMapping.put("inviteLearnerBack", ".//button[contains(text(),'Back')]");
+		xPathMapping.put("ongoingBreadcrumb",".//*[@id='breadcrumbox']/ol/li[2]/a")
+		
+		//Follow Organization
+		xPathMapping.put("followOrg", ".//*[@id='overview']//button[contains(text(), 'Add Participant')]");
+		
+		//Admin Dashboard
+		xPathMapping.put("viewAllOngoingTrainings",".//*[@id='dashboard']/div/div/div[4]/div[1]/div[1]/div/div/div/div[1]/div[2]/dashboard-list-widget/div/div/div/a");
 	}
 
 	// Main function to take care of click actions
@@ -160,6 +178,9 @@ class ClickAction {
 		if(xpath.equals("//button[contains(text(), 'REGISTER')]")){
 			browser.delay(4000)
 			browser.scrollToElement2("//button[contains(text(), 'REGISTER')]")
+		}else if(xpath.equals(".//*[@id='main_page']//button[@ng-click='inviteUserToCourse()']")){
+		browser.delay(2000)
+		browser.scrollToElement2(".//*[@id='main_page']//button[@ng-click='inviteUserToCourse()']")
 		}
 		if(xpath.equals(".//div[@ng-show='getStartedSection']/div/button[@ui-sref='kpna.login']")){
 			browser.delay(3000)

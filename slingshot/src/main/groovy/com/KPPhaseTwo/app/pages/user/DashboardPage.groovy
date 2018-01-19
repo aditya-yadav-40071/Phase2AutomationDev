@@ -18,6 +18,10 @@ final class DashboardPage extends WebPage {
 	}
 
 	//To verify the Organization name
+	def static getOrgName = {browser, formData ->
+		new DashboardForm().getOrgName browser, formData
+	}
+	
 	def static orgNameChangeOnDashboard = {browser, formData ->
 		new DashboardForm().orgNameChangeOnDashboard browser, formData
 	}
@@ -75,17 +79,24 @@ final class DashboardPage extends WebPage {
 
 		//To verify Organization name on the dashboard
 		def static final orgNameChangeOnDashboard = {browser, formData ->
-			def orgName
-			browser.delay(5000)
-			if(browser.isDisplayed(DASH_ORG_NAME)){
-				orgName = browser.gettext(DASH_ORG_NAME)
-			}
-			if(orgName.equalsIgnoreCase(KPCommonPage.ViewOrgDataVerify[0])){
+			browser.delay(2000)
+			def OrganizationName = new DashboardForm().getOrgName(browser)
+			
+			if(OrganizationName.equalsIgnoreCase(KPCommonPage.ViewOrgDataVerify[0])){
 				return new SuccessOutcome()
 			}else
 				return KPCommonPage.returnFailureOutcome(browser, "orgNameIssue", "Changed Organization name not reflecting on dashboard.")
 		}
 
+		def static getOrgName = { def browser, def formData ->
+			def orgName
+			browser.delay(3000)
+			if(browser.isDisplayed(DASH_ORG_NAME)){
+				orgName = browser.gettext(DASH_ORG_NAME)
+			}
+			return orgName
+		}
+		
 		//To get the number of pods from dashboard page
 		def static final getPodNumber = {browser, formData ->
 			def recString = browser.gettext(DASH_REC_NO)

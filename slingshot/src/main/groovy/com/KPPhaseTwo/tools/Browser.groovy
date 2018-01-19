@@ -1,8 +1,6 @@
 package com.KPPhaseTwo.tools
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
-
-
 //import com.KPPhaseTwo.app.Page
 import groovy.transform.Immutable
 import org.openqa.selenium.By
@@ -32,7 +30,6 @@ import org.apache.commons.io.FileUtils
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.testng.Assert;
 import com.KPPhaseTwo.utils.*
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat
 import java.util.ArrayList;
@@ -45,16 +42,11 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
-
 import org.openqa.selenium.JavascriptExecutor
-
 import static java.lang.Thread.sleep as wait
-
 import org.openqa.selenium.safari.SafariOptions;
-
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebElement;
-
 import java.text.DateFormatSymbols
 
 /**
@@ -140,7 +132,6 @@ public final class Browser {
 
 	//Explicit wait Condition
 	public void explicitWait(def element) {
-		println"In explicit wait"
 		WebDriverWait wait = new WebDriverWait(driver,30);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(getElement(XPATH, element)));
 	}
@@ -174,9 +165,9 @@ public final class Browser {
 
 	//To click hidden element
 	public void clickHideElement(def element){
-		WebElement ele = getElement(XPATH, element)
+		//WebElement ele = getElement(XPATH, element)
 		JavascriptExecutor js = (JavascriptExecutor)driver;
-		js.executeScript("arguments[0].click();", ele);
+		js.executeScript("arguments[0].click();", element);
 	}
 
 	/**
@@ -275,7 +266,6 @@ public final class Browser {
 		String month = "wrong";
 		DateFormatSymbols dfs = new DateFormatSymbols();
 		String[] months = dfs.getMonths();
-		println "months from method::::"+months
 		if (num >= 0 && num <= 11 ) {
 			month = months[num].substring(0, 3);
 		}
@@ -436,19 +426,18 @@ public final class Browser {
 	 * @param locatorType locator for error message fields
 	 */
 	public def getValidationMessages(def fields){
-		delay(1000)
+		delay(500)
 		def validationMessages = []
 		for(errMessageFields in fields) {
 			if(getElement(XPATH, errMessageFields) != null){
 				ArrayList<WebElement> validationMsgs = driver.findElements(By.xpath(errMessageFields))
 				for(int i =0;i<=validationMsgs.size()-1;i++){
 					if(validationMsgs.get(i).getText() != null && validationMsgs.get(i).getText() != "") {
-						validationMessages.add(validationMsgs.get(i).getText())
+						validationMessages.add(validationMsgs.get(i).getText().trim())
 					}
 				}
 			}
 		}
-		println "validationMessages:::: "+validationMessages
 		return validationMessages
 	}
 
@@ -481,7 +470,7 @@ public final class Browser {
 			List<WebElement> lists = dropDownListBox.findElements(By.tagName("option"))
 			for(int i=0; i<= lists.size()-1;i++){
 				String dropdownValue = lists.get(i).getText().trim()
-				if(value.equals(dropdownValue)){
+				if(value.equalsIgnoreCase(dropdownValue)){
 					flag = true
 					break
 				}
@@ -576,7 +565,7 @@ public final class Browser {
 		List<WebElement> lists = driver.findElements(By.xpath(element))
 		for(int i=0;i<lists.size();i++){
 			String text = lists.get(i).getText()
-			list.add(text)
+			list.add(text.trim())
 		}
 		list
 	}
@@ -679,7 +668,6 @@ public final class Browser {
 				field.click()
 				delay(500)
 				field.clear()
-
 				field.sendKeys(value)
 			}
 		}else{

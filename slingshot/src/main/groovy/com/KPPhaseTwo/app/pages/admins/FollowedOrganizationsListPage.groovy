@@ -4,12 +4,8 @@ import com.KPPhaseTwo.model.FailureOutcome
 import com.KPPhaseTwo.model.SuccessOutcome
 import com.KPPhaseTwo.web.WebForm
 import com.KPPhaseTwo.web.WebPage
-
 import com.KPPhaseTwo.tools.Browser
-
 import com.KPPhaseTwo.app.pages.KPCommonPage
-
-
 
 
 final class FollowedOrganizationsListPage extends WebPage {
@@ -110,11 +106,11 @@ final class FollowedOrganizationsListPage extends WebPage {
 
 		//Followed Organizations form elements
 
-		private static final def SEARCH_TEXT = ".//*[@id='company_new']"
+		private static final def SEARCH_TEXT = ".//input[@placeholder='Search'][@style='']"
 
 		private static final def LOCATION = ".//md-select[@placeholder='Select Location']"
 
-		private static final def LOCATION_LIST = "//md-option[@ng-value='location.placeId']"
+		private static final def LOCATION_LIST = "//md-option[@ng-value='location.placeId']/div[@class='md-text ng-binding']"
 
 		private static final def INDUSTRY = ".//md-select[@placeholder='Select Industry']"
 
@@ -136,7 +132,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 
 		private static final def ELEMENT = "html/body/div[1]/div[1]//nav/div[2]/img"
 
-		private static final def ERROR_MSG = "//div[@ng-show='isListEmpty']"
+		private static final def ERROR_MSG = "//div[@class='list-section col-sm-12 col-md-12 visible-lg']//div[@ng-show='isListEmpty']/span"
 
 		private static final def FIFTY_RESULT = "//input[@id='item5']/following-sibling::label"
 
@@ -148,7 +144,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 
 		private static final def ORG_INDUSTRIES = "//span[@ng-if='industry']"
 
-		private static final def ORG_LOCATIONS = "//span[@class='pull-left content-name smallText mt_10 ng-binding']"   //"//span[@class='pull-left content-name smallText mt_10 ng-binding']"
+		private static final def ORG_LOCATIONS = ".//span[@class='pull-left content-name smallText mt_10 mr30 ng-binding']"   //"//span[@class='pull-left content-name smallText mt_10 ng-binding']"
 
 		private static final def ORG_PROFILE_NAME = "//h4[@class='primary_heading mb50 capitalize ng-binding']"
 
@@ -161,6 +157,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 		private static final def PAGINATION_NEXT = "//li[@class='pagination-next ng-scope']/a"
 
 		private static final def FIELDS = [SEARCH_TEXT, INDUSTRY, LOCATION]// the error fields.
+		
 		private static final def FORM_ERROR = ""
 
 		private static final def FIELD_ERROR = ""
@@ -168,7 +165,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR, FIELD_ERROR]
 
 		//error message map (Key-Value Pair)
-		def static final searchPodPageErrorMessageMap = []
+		def static final searchPodPageErrorMessageMap = [followListEmpty : 'You are not following any organizations yet!!']
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
@@ -181,7 +178,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 						KPCommonPage.firstOrgName = formData[i]
 						browser.populateField(FIELDS[i],formData[i])
 					}
-					if(FIELDS[i].equals(LOCATION)){
+			/*		if(FIELDS[i].equals(LOCATION)){
 						browser.click LOCATION
 						browser.delay(1000)
 						def locationList = []
@@ -214,7 +211,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 						}
 						KPCommonPage.industryLists = industryList
 						browser.click(ELEMENT)
-					}
+					}*/
 					browser.delay(1000)
 				}
 			}
@@ -242,7 +239,6 @@ final class FollowedOrganizationsListPage extends WebPage {
 			}else{
 				return KPCommonPage.returnFailureOutcome(browser, "OrganizationDisplayedIssue", "Org list is not displayed.")
 			}
-
 			return allResult
 		}
 
@@ -292,11 +288,9 @@ final class FollowedOrganizationsListPage extends WebPage {
 
 		//To verify the error message being displayed in followed organization list page
 		def static final isErrorMessageCorrect = {browser, formData ->
-
-			def expMsg = "You are not following any organizations yet!!"
 			def actMsg = browser.gettext(ERROR_MSG)
 			if(browser.isDisplayed(ERROR_MSG)){
-				if(expMsg.equalsIgnoreCase(actMsg.trim())){
+				if(searchPodPageErrorMessageMap.followListEmpty.equalsIgnoreCase(actMsg.trim())){
 					return new SuccessOutcome()
 				}else{
 					return KPCommonPage.returnFailureOutcome(browser, "ErrorMessageComparisionIssue", "After Comparision Error message is not displaying correctly")
@@ -342,7 +336,7 @@ final class FollowedOrganizationsListPage extends WebPage {
 			}
 		}
 
-		def static final correctOrgDisplayed = {browser, formData ->
+		def static final correctOrgDisplayed = { browser, formData ->
 
 			def allResult = FollowedOrganizationsListPage.getOrgTextList(browser,ELEMENT,ORG_LIST,FIFTY_RESULT)
 			println "....allResult....."+allResult
@@ -353,8 +347,6 @@ final class FollowedOrganizationsListPage extends WebPage {
 				outerloop:for(int i = 0; i < allResult.size(); i++){
 					def allResultElement = browser.getListElements(ORG_LIST)
 					browser.scrollToElement(allResultElement[i])
-					//browser.delay(1000)
-					//browser.clickElement allResultElement[i]
 					browser.delay(2000)
 					if(browser.isDisplayed(ORG_INDUSTRIES)){
 						browser.delay(2000)
@@ -619,19 +611,8 @@ final class FollowedOrganizationsListPage extends WebPage {
 
 
 		}
-		
-		
-		
-		
 
-
-
-		
-
-
-
-
-		def static final isCorrectSortingList = {browser, formData ->
+				def static final isCorrectSortingList = {browser, formData ->
 			def sortBy = KPCommonPage.searchOrgSortByData
 			def matchingResult
 			browser.delay(2000)

@@ -63,11 +63,48 @@ Scenario: To login to the application as a sales admin with DATA LoginAsSalesAdm
 	When I SUBMIT the form
 	Then I am ON dashboard page
 
-@Group(LoginAsSubAdmin)
+@Name(LoginAsSubAdmin)
 Scenario: To login to the application as a Sub-Admin with DATA LoginAsSubAdmin_Success
 	Given I am ON home page
 	And I CLICK login
 	Then I am ON login page
-	And I ENTER the details
+	And I ENTER the details with DATA LoginAsSubAdmin_Success
 	When I SUBMIT the form
 	Then I am ON dashboard page
+	
+@Name(LoginAsOrgAdmin)
+Scenario: To login to the application as a Sub-Admin with DATA LoginAsAdmin_Success
+	Given I am ON home page
+	And I CLICK login
+	Then I am ON login page
+	And I ENTER the details with DATA LoginAsAdmin_Success
+	When I SUBMIT the form
+	Then I am ON dashboard page
+	
+@Name(LoginAsTrainerAdmin)
+Scenario: To login to the application as a Sub-Admin with DATA LoginAsTrainerAdmin_Success
+	Given I am ON home page
+	And I CLICK login
+	Then I am ON login page
+	And I ENTER the details with DATA LoginAsTrainerAdmin_Success
+	When I SUBMIT the form
+	Then I am ON dashboard page
+	
+@Name(LoginAsHRAdmin)
+Scenario: To login to the application as a HR Admin with DATA LoginAsHRAdmin_Success
+	Given I am ON home page
+	And I CLICK login
+	Then I am ON login page
+	And I ENTER the details with DATA LoginAsHRAdmin_Success
+	When I SUBMIT the form
+	Then I am ON dashboard page
+	
+@Name(LoginAsSiteAdmin)
+Scenario: To login to the application as a HR Admin with DATA LoginAsSiteAdmin_Success
+	Given I am ON home page
+	And I CLICK login
+	Then I am ON login page
+	And I ENTER the details with DATA LoginAsSiteAdmin_Success
+	When I SUBMIT the form
+	Then I am ON dashboard page
+	

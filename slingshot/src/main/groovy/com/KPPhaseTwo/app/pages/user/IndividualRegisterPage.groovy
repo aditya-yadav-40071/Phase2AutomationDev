@@ -18,7 +18,6 @@ final class IndividualRegisterPage extends WebPage {
 
 	//Override
 	def submit = {browser, formKey, formData ->
-		println ("Submit method in IndividualRegisterPage")
 		new IndividualRegisterForm().submit(browser, formData)
 	}
 
@@ -53,7 +52,7 @@ final class IndividualRegisterPage extends WebPage {
 
 		private static final def REGISTER = ".//button[@ng-click='submitRegistrationDetails(register)']"
 
-		private static final def AUTO_CITY_LIST = ".//div[@class='pac-container pac-logo hdpi'][last()]/descendant::span[@class='pac-matched']"
+		private static final def AUTO_CITY_LIST = ".//div[@class='pac-container pac-logo'][last()]/descendant::span[@class='pac-matched']"
 
 		private static final def FIELDS = [FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL_ID, PASSWORD, CONFIRM_PASSWORD, CITY, PIN, MOBILE_NO, OTP, AGREE_TO_TERMS]
 
@@ -63,7 +62,8 @@ final class IndividualRegisterPage extends WebPage {
 		private static final def ERROR_MESSAGE_FIELDS = [FORM_ERROR]
 
 		//error message map (Key-Value Pair)
-		def static final individualRegPageErrorMessageMap = [fname_req : 'First Name is required.',
+		def static final individualRegPageErrorMessageMap = [
+			fname_req : 'First Name is required.',
 			emailId_req :'Email ID is required.',
 			invalid_email :'Enter a valid Email ID',
 			email_already_exist : 'Email ID already exists',
@@ -82,7 +82,6 @@ final class IndividualRegisterPage extends WebPage {
 
 		//To enter data
 		def static final populateFields = { browser, formData ->
-			println ("IndividualRegisterForm.populateFields - data: " + formData)
 			def outcome = WebForm.checkFormFieldsData(formData, FIELDS)
 			if(outcome.isSuccess()){
 				for(int i=0;i<=FIELDS.size()-1;i++){
@@ -130,9 +129,7 @@ final class IndividualRegisterPage extends WebPage {
 		 */
 		def final submit(browser, data) {
 			def actualValidationMsg = submitForm browser, FIELDS, REGISTER, data, ERROR_MESSAGE_FIELDS
-			println "Actual validation message ::: "+actualValidationMsg
 			def actualValidationMsgKeys = getActualErrorMessageKeys(actualValidationMsg, individualRegPageErrorMessageMap)
-			println "Actual validation message keys  ::: "+actualValidationMsgKeys
 			def outcome = new SuccessOutcome();
 			outcome.setResultData(actualValidationMsgKeys)
 			return outcome

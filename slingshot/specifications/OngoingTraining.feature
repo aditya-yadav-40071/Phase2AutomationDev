@@ -10,7 +10,6 @@ Scenario: To verify the page title of the Ongoing Training page
 	And I CLICK viewAllOngoing
 	Then I am ON ongoingTraining page
 
-
 Scenario: To verify on click of add to wishlist the same pods are added to pod wishlist page or not
 	Given I am ON dashboard page
 	And I CLICK viewAllOngoing
@@ -21,7 +20,6 @@ Scenario: To verify on click of add to wishlist the same pods are added to pod w
 	Then I am ON podWishList page
 	And I VERIFY isPodWishlistDisplayed in wishlist page
 	Then the wishlisted pod is displayed in the wishlist page
-
 	
 Scenario: To verify the batch progress feature
 	Given I am ON dashboard page
@@ -30,7 +28,6 @@ Scenario: To verify the batch progress feature
 	When I CLICK viewBatchProgress link
 	Then I am ON podDetails page
 	
-
 Scenario: To verify skill filter with DATA PodSkillFilter_Success
 	Given I am ON dashboard page
 	And I CLICK viewAllOngoing
@@ -39,7 +36,6 @@ Scenario: To verify skill filter with DATA PodSkillFilter_Success
 	And I VERIFY displayedSkillFilter result set
 	Then the filtered pod name displayed are same as the skills selected
 	
-
 Scenario: To verify industry filter with DATA PodIndustryFilter_Success
 	Given I am ON dashboard page
 	And I CLICK viewAllOngoing
@@ -62,11 +58,10 @@ Scenario: To verify min and max filter with DATA PodMinMaxFilter_Success
 	Given I am ON dashboard page
 	And I CLICK viewAllOngoing
 	Then I am ON ongoingTraining page
-	When I ENTER filterDetails in min And max duration
+	When I ENTER filterDetails in min and max duration
 	And I VERIFY displayedMinAndMaxDurationFilter result set
 	Then the filtered pod name is same as the pod clicked
 	
-
 Scenario: To verify sort by filter with DATA OngoingPodsSortByFilter_Success
 	Given I am ON dashboard page
 	And I CLICK viewAllOngoing
@@ -83,23 +78,4 @@ Scenario: To verify the pod count displayed is same when we try to select and re
 	When I ENTER filterDetails in skills 
 	And I VERIFY removeSelectedSkills from the auto suggest
 	Then the Pod count is correct
-	
-	
-
-	
-	
-	
-
-
-	
-	
-	
-	
-
-	
-	
-
-
-
-
 	

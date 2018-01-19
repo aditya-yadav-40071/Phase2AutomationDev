@@ -11,14 +11,19 @@ import com.KPPhaseTwo.app.pages.admins.AddAdminPage
 import com.KPPhaseTwo.app.pages.admins.PostJobPage
 import com.KPPhaseTwo.app.pages.admins.SalesAdminLicenseDetailsPage
 import com.KPPhaseTwo.app.pages.user.ViewUserPublicProfilePage
+import com.KPPhaseTwo.app.pages.admins.ParticipantListPage
+import com.KPPhaseTwo.app.pages.admins.InviteUserPage
+import com.KPPhaseTwo.app.pages.pods.SearchPodPage
+import com.KPPhaseTwo.app.pages.admins.JobDetailPage
+import com.KPPhaseTwo.app.pages.admins.JobPostingListPage
 
 /**
  * Created by Sandhya on 27/9/2015
  */
 class UserManager {
 
-//LOGIN PAGE
-	
+	//LOGIN PAGE
+
 	//To verify that the logged in user is displayed in the edit profile page
 	def correctUserLoggedIn = { browser, formData ->
 		LoginPage.correctUserLoggedIn browser, formData
@@ -28,43 +33,53 @@ class UserManager {
 	def loginAsAnAdmin = { browser, formData ->
 		LoginPage.loginAsAnAdmin browser,formData
 	}
+
+	//EDIT PROFILE
 	
-//EDIT PROFILE
+	def profilePercentagecompletion = { browser, formData ->
+		ViewUserPublicProfilePage.profilePercentagecompletion browser, formData
+	}
+	
+	def leftSideDetailsOfEditProfile = { browser, formData ->
+		UserEditProfilePage.leftSideDetailsOfEditProfile browser, formData
+	}
+	 
+	def leftSideDetailsOfViewProfile = { browser, formData ->
+		ViewUserPublicProfilePage.leftSideDetailsOfViewProfile browser, formData
+	}
+	
 	def educationDetailsMatch = { browser, formData ->
 		ViewUserPublicProfilePage.educationDetailsMatch browser, formData
 	}
-	
+
 	def workExperienceDetailsMatch = { browser, formData ->
 		ViewUserPublicProfilePage.workExperienceDetailsMatch browser, formData
 	}
-	def skillsDisplayed = { browser, formData ->
-		UserEditProfilePage.skillsDisplayed browser, formData
-	}
-	
+
 	def deleteExistingSkills = { browser, formData ->
 		UserEditProfilePage.deleteExistingSkills browser, formData
 	}
-	
+
 	def skillsRetained = { browser, formData ->
 		UserEditProfilePage.skillsRetained browser, formData
 	}
-	
+
 	def removeASkill = { browser, formData ->
 		UserEditProfilePage.removeASkill browser, formData
 	}
-	
+
 	def skillsRemoved = { browser, formData ->
 		UserEditProfilePage.skillsRemoved browser, formData
 	}
-	
+
 	def uploadProfilepic = { browser, formData ->
 		UserEditProfilePage.uploadProfilepic browser, formData
 	}
-	
+
 	def uploadUserImgDisplay = { browser, formData ->
 		ViewUserPublicProfilePage.uploadUserImgDisplay browser,  formData
 	}
-	
+
 	def deleteWorkExperience = { browser, formData ->
 		UserEditProfilePage.deleteWorkExperience browser,  formData
 	}
@@ -72,7 +87,7 @@ class UserManager {
 	def workExperienceDeleted = { browser, formData ->
 		ViewUserPublicProfilePage.workExperienceDeleted browser,  formData
 	}
-	
+
 	def ifWorkExperienceDisplayed = { browser, formData ->
 		ViewUserPublicProfilePage.ifWorkExperienceDisplayed browser,  formData
 	}
@@ -80,21 +95,37 @@ class UserManager {
 	def editWorkExperienceDetails = { browser, formData ->
 		UserEditProfilePage.editWorkExperienceDetails browser,  formData
 	}
-	
+
 	def certificateMatch = { browser, formData ->
 		ViewUserPublicProfilePage.certificateMatch browser,  formData
 	}
-	
+
 	def editDocumentsDetails = { browser,formData ->
 		UserEditProfilePage.editDocumentsDetails browser, formData
 	}
-	
+
 	def deleteCertificate = { browser, formData ->
-		println "Inside User ManagerOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
 		UserEditProfilePage.deleteCertificate browser,  formData
 	}
-//DASHBOARD PAGE
+
+	def skillsDisplayed = { browser,formData ->
+		new ViewUserPublicProfilePage().skillsDisplayed(browser,formData)
+	}
+
+	def correctNameAfterEdit = { browser, formData ->
+		new ViewUserPublicProfilePage().correctNameAfterEdit(browser,formData)
+	}
+
+	def userBasicInformationMatch = { browser, formData ->
+		new ViewUserPublicProfilePage().userBasicInformationMatch(browser,formData)
+	}
 	
+	def ifcertificateDeleted = { browser, formData ->
+		new ViewUserPublicProfilePage().ifcertificateDeleted(browser,formData)
+	}
+
+	//DASHBOARD PAGE
+
 	//To logout from the application
 	def logOut = { browser, formData ->
 		DashboardPage.logOut browser,formData
@@ -122,9 +153,9 @@ class UserManager {
 		DashboardPage.loggedInAsSubAdmin browser, formData
 	}
 
-	
-//EDIT ORGANIZATION PROFILE
-	
+
+	//EDIT ORGANIZATION PROFILE
+
 	//To verify that the necessary fields are entered in Edit profile page with correct data.
 	def profileDataDisplayMatch = { browser, formData ->
 		EditOrganizationProfilePage.profileDataDisplayMatch browser, formData
@@ -154,14 +185,14 @@ class UserManager {
 	def orgProfileImgUpload = {browser, formData ->
 		EditOrganizationProfilePage.orgProfileImgUpload browser, formData
 	}
-	
+
 	//To get First name of the Org Admin
 	def getOrgFirstName = {browser, formData ->
 		EditOrganizationProfilePage.getOrgFirstName browser, formData
 	}
 
-//VIEW ORGANIZATION PROFILE
-	
+	//VIEW ORGANIZATION PROFILE
+
 	//To verify data after editing data
 	def editDataMatch = { browser, formData ->
 		ViewOrganizationProfilePage.editDataMatch browser, formData
@@ -182,8 +213,8 @@ class UserManager {
 		ViewOrganizationProfilePage.aboutLatestNewsDisplay browser, formData
 	}
 
-//MANAGE ADMINS PAGE
-	
+	//MANAGE ADMINS PAGE
+
 	def clickOnAdminName = { browser, formData ->
 		ManageAdminsPage.clickOnAdminName browser,formData
 	}
@@ -191,7 +222,7 @@ class UserManager {
 	def adminDetails = { browser, formData ->
 		ManageAdminsPage.adminDetails browser,formData
 	}
-	
+
 	//to remove an admon from the admins list
 	def removeAnAdmin = { browser, formData ->
 		ManageAdminsPage.removeAnAdmin browser,formData
@@ -209,33 +240,67 @@ class UserManager {
 	def clickOnNewAdminChangePrivilage = { browser, formData ->
 		ManageAdminsPage.clickOnNewAdminChangePrivilage browser, formData
 	}
+
+	//To verify job title after posting a job
+	def correctJobDisplayed = { browser, formData ->
+		JobPostingListPage.correctJobDisplayed browser ,formData
+	}
 	
-	//To verify job title after posting a job 
-	def isCorrectJob = {browser, formData ->
-		PostJobPage.isCorrectJob browser ,formData
+	def clickOnFirstJob = { browser, formData->
+		JobPostingListPage.clickOnFirstJob browser ,formData
+	}
+	
+	def jobDetails = { browser, formData ->
+		JobDetailPage.jobDetails browser ,formData
+	}
+	
+	def getOrgName = { browser, formData ->
+		 DashboardPage.getOrgName browser ,formData
 	}
 
 	//Verify that added admin is displayed in the list
 	def addedAdminDisplayed = { browser, formData ->
 		ManageAdminsPage.addedAdminDisplayed browser,formData
 	}
-	
-//CHANGE PRIIVILEGES PAGE
+
+	//CHANGE PRIIVILEGES PAGE
 
 	def adminPrivilageChanged = { browser, formData ->
 		ChangePrivilagesPage.adminPrivilageChanged browser, formData
 	}
-	
-//ADD ADMIN PAGE
+
+	//ADD ADMIN PAGE
 
 	def addAnotherAdminErrorMessage = { browser, formData ->
 		AddAdminPage.addAnotherAdminErrorMessage browser, formData
 	}
 
-//SALES ADMIN
+	//SALES ADMIN
 
 	def clickPodReview = {browser, formData ->
 		SalesAdminLicenseDetailsPage.clickPodReview browser, formData
 	}
+
+	//Participant list page
+	def ifUserIsEnrolled = { browser, formData ->
+		ParticipantListPage.ifUserIsEnrolled browser, formData
+	}
+
+	def learnerListSorted = { browser, formData ->
+		ParticipantListPage.learnerListSorted browser, formData
+	}
+
+	def searchUserByFilter = { browser, formData ->
+		ParticipantListPage.searchUserByFilter browser, formData
+	}
+
+	def enrollUserToAnotherPod = { browser, formData ->
+		ParticipantListPage.enrollUserToAnotherPod browser, formData
+	}
 	
+	def loginWithInvitedUser = { browser,formData->
+		LoginPage.loginWithInvitedUser browser, formData
+	
+	}
+
 }
